@@ -8,8 +8,9 @@ class Header extends StatelessWidget {
       color: Color.fromRGBO(255, 169, 209, 1), // Establecer el color de fondo
       child: Center(
         child: Image.asset(
-          'assets/logo.png', // Ruta de la imagen del logo en assets
-          height: 80, // Altura del logo
+          'match2.png', // Ruta de la imagen del logo en assets
+          height: 90, // Altura del logo
+          width: 400,
           fit: BoxFit.contain, // Ajustar la imagen dentro del contenedor
         ),
       ),

@@ -7,19 +7,31 @@ class Footer extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           backgroundColor: Color.fromRGBO(255, 169, 209, 1),
-          icon: Icon(Icons.home),
-          label: '', // Establecer la etiqueta como una cadena vacía
+          icon: Container(
+            child: Icon(Icons.home),
+            alignment: Alignment.center, // Center the icon within the container
+          ),
+          label: '', // Empty label
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
+          icon: Container(
+            child: Icon(Icons.person),
+            alignment: Alignment.center,
+          ),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart),
+          icon: Container(
+            child: Icon(Icons.shopping_cart),
+            alignment: Alignment.center,
+          ),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.menu),
+          icon: Container(
+            child: Icon(Icons.menu),
+            alignment: Alignment.center,
+          ),
           label: '',
         ),
       ],
