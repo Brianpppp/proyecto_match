@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto_match/components/header.dart';
-import 'package:proyecto_match/components/footer.dart';
 
-
-
-
-
-
-
+import '../components/footer.dart';
+import '../components/header.dart';
 
 
 
