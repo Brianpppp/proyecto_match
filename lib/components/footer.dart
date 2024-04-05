@@ -4,18 +4,22 @@ class Footer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      backgroundColor: Colors.white, // Fondo blanco
+      selectedItemColor: Colors.grey[800], // Color oscuro para los iconos seleccionados
+      unselectedItemColor: Colors.grey[600], // Color para los iconos no seleccionados
+      type: BottomNavigationBarType.fixed, // Para alinear los íconos verticalmente
+      iconSize: 40,
       items: [
         BottomNavigationBarItem(
-          backgroundColor: Color.fromRGBO(255, 169, 209, 1),
           icon: Container(
             child: Icon(Icons.home),
-            alignment: Alignment.center, // Center the icon within the container
+            alignment: Alignment.center,
           ),
-          label: '', // Empty label
+          label: '', // Etiqueta vacía
         ),
         BottomNavigationBarItem(
           icon: Container(
-            child: Icon(Icons.person),
+            child: Icon(Icons.fastfood_sharp),
             alignment: Alignment.center,
           ),
           label: '',
@@ -29,7 +33,7 @@ class Footer extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Container(
-            child: Icon(Icons.menu),
+            child: Icon(Icons.person),
             alignment: Alignment.center,
           ),
           label: '',

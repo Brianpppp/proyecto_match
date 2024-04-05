@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:proyecto_match/components/header.dart';
 import 'package:proyecto_match/components/footer.dart';
 
+
+
+
+
+
+
+
+
+
 class ImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -25,24 +34,33 @@ class ImageWidget extends StatelessWidget {
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false, // Aquí se deshabilita el mensaje
-      home: Scaffold(
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch, // Para asegurarte de que el Header ocupe todo el ancho
-          children: [
-            Header(), // Agrega el componente Header
-            Expanded(
-              child: Container(
-                color: Color.fromRGBO(255, 169, 209, 1.0), // Color de fondo
-                child: Center(
-                  child: ImageWidget(),
-                ),
+    return Scaffold(
+      backgroundColor: Colors.pink, // Establece el color de fondo rosa
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Header(),
+          Container(
+            color: Color.fromRGBO(255, 169, 209, 1.0), // Color de fondo del texto personalizado
+            child: Text(
+              'Ready to ',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold, // Agrega negrilla al texto
               ),
             ),
-            Footer(), // Agrega el componente Footer
-          ],
-        ),
+          ),
+          Expanded(
+            child: Container(
+              color: Color.fromRGBO(255, 169, 209, 1.0), // Color de fondo personalizado
+              child: Center(
+                child: ImageWidget(),
+              ),
+            ),
+          ),
+          Footer(),
+        ],
       ),
     );
   }
