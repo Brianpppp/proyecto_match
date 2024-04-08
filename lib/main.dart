@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:todolist_firebase/screens/home_screen.dart';
+import 'package:todolist_firebase/screens/menu_card.dart';
+import 'package:todolist_firebase/screens/store_points.dart';
+import 'package:todolist_firebase/screens/user.dart';
 import 'firebase_options.dart';
 import 'screens/login_registro_screen.dart'; // Ajusta la ruta de importación
 
@@ -23,6 +27,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.pink,
       ),
       home: AuthScreen(), // Utiliza AuthScreen como la pantalla principal
+      routes: {
+        '/home_screen': (context)=> HomeScreen(),
+        '/menu_card': (context) => MenuPage(),
+        '/store_points': (context) => StorePage(),
+        '/user': (context) => UserPage(),
+      },
     );
   }
 }
