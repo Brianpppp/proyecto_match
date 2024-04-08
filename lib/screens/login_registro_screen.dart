@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../firebase_options.dart';
+import 'home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
         colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.pink), // Definir el esquema de colores con el tono de rosa
-        backgroundColor: Colors.pink[100], // Establecer el color de fondo
+
       ),
       home: AuthScreen(),
     );
@@ -68,6 +69,11 @@ class _AuthScreenState extends State<AuthScreen> {
             content: Text('Log in successful!'),
             duration: Duration(seconds: 2),
           ),
+        );
+        // Navegar a la pantalla HomeScreen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
         );
       }
     } on FirebaseAuthException catch (error) {
