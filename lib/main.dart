@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       home: AuthScreen(), // Utiliza AuthScreen como la pantalla principal
       routes: {
         '/home_screen': (context)=> HomeScreen(),
-        '/menu_card': (context) => MenuPage(),
+        '/menu': (context) => MenuPage(),
         '/store_points': (context) => StorePage(),
         '/user': (context) => UserPage(),
       },

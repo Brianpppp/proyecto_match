@@ -1,14 +1,26 @@
-
 import 'package:flutter/material.dart';
 import '../components/footer.dart';
+import '../components/header.dart';
 
 class MenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Menú')),
-      body: Center(child: Text('carta de hamburguesas ')),
       bottomNavigationBar: Footer(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Header(),
+          Expanded(
+            child: Container(
+              color: Color.fromRGBO(255, 169, 209, 1.0),
+              child: Center(
+                child: Text('carta de hamburguesas '),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

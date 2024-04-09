@@ -21,7 +21,7 @@ class _FooterState extends State<Footer> {
         break;
       case 1:
       // Navegar a la página de menú de comida rápida
-       Navigator.pushNamed(context, '/menu_card');
+       Navigator.pushNamed(context, '/menu');
         break;
       case 2:
       // Navegar a la página del carrito de compras
@@ -38,7 +38,7 @@ class _FooterState extends State<Footer> {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       backgroundColor: Colors.white,
-      selectedItemColor: Colors.grey[800],
+      selectedItemColor: Colors.grey[600],
       unselectedItemColor: Colors.grey[600],
       type: BottomNavigationBarType.fixed,
       iconSize: 40,
@@ -61,7 +61,7 @@ class _FooterState extends State<Footer> {
         ),
         BottomNavigationBarItem(
           icon: Container(
-            child: Icon(Icons.shopping_cart),
+            child: Icon(Icons.map),
             alignment: Alignment.center,
           ),
           label: '',

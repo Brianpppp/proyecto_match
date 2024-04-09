@@ -58,6 +58,10 @@ dev_dependencies:
 flutter:
   assets:
     - assets/hamburguesa.jpg
+    - assets/hamburguesa2.jpg
+    - assets/hamburguesa3.jpg
+    - assets/hamburguesa4.jpg
+    - assets/hamburguesa5.jpg
     - assets/match1.png
     - assets/match2.png
     - assets/match3.png
