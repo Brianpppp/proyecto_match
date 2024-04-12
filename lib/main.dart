@@ -13,6 +13,7 @@ void main() async {
   // Código de inicialización de Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+
   );
   // Ejecuta la aplicación
   runApp(MyApp());
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // Esta línea oculta el banner de "Debug"
       title: 'Flutter Authentication',
       theme: ThemeData(
         primarySwatch: Colors.pink,
@@ -36,3 +38,13 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+/*class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Mi App',
+      home: HomeScreen(),
+    );
+  }
+}*/
