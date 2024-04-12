@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Importa Firestore
 import '../firebase_options.dart';
-import 'home_screen.dart';
+import 'preguntas_usuario.dart'; // Importa la página de preguntas del usuario
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.pink,
         colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: Colors.pink,
-          background: Color.fromRGBO(255, 169, 209, 1.0), // Establecer el color de fondo de la aplicación
+          background: Color.fromRGBO(255, 169, 209, 1.0), // Establece el color de fondo de la aplicación
         ),
       ),
       home: AuthScreen(),
@@ -72,10 +73,10 @@ class _AuthScreenState extends State<AuthScreen> {
             duration: Duration(seconds: 2),
           ),
         );
-        // Navegar a la pantalla HomeScreen
+        // Navegar a la pantalla PreguntasUsuario
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => PreguntasUsuario(email: _emailController.text)),
         );
       }
     } on FirebaseAuthException catch (error) {
@@ -104,7 +105,6 @@ class _AuthScreenState extends State<AuthScreen> {
         SnackBar(
           content: Text('Password reset email sent!'),
           duration: Duration(seconds: 2),
-
         ),
       );
     } catch (error) {
@@ -134,7 +134,6 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(255, 169, 209, 1.0), // Color de fondo rosa
-
       appBar: AppBar(
         title: Text(_isLogin ? 'Log in' : 'Sign Up'),
       ),
@@ -154,14 +153,14 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
               SizedBox(height: 20),
               SizedBox(
-                width: 300, // Anchura deseada para la tarjeta
+                width: 350, // Anchura deseada para la tarjeta
                 child: Card(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.all(40),
+                    padding: EdgeInsets.all(20),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -175,12 +174,12 @@ class _AuthScreenState extends State<AuthScreen> {
                                 });
                               },
                               child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
                                 decoration: BoxDecoration(
-                                  color: _isLogin ? Colors.pinkAccent : Colors.grey,
+                                  color: _isLogin ? Color.fromRGBO(226, 50, 42, 1): Colors.grey,
                                   borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(30),
-                                    bottomLeft: Radius.circular(30),
+                                    topLeft: Radius.circular(40),
+                                    bottomLeft: Radius.circular(40),
                                   ),
                                 ),
                                 child: Text(
@@ -196,12 +195,12 @@ class _AuthScreenState extends State<AuthScreen> {
                                 });
                               },
                               child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
                                 decoration: BoxDecoration(
-                                  color: _isLogin ? Colors.grey : Colors.pinkAccent,
+                                  color: _isLogin ? Colors.grey : Color.fromRGBO(226, 50, 42, 1),
                                   borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(30),
-                                    bottomRight: Radius.circular(30),
+                                    topRight: Radius.circular(40),
+                                    bottomRight: Radius.circular(40),
                                   ),
                                 ),
                                 child: Text(
@@ -213,12 +212,13 @@ class _AuthScreenState extends State<AuthScreen> {
                           ],
                         ),
                         SizedBox(height: 20),
-                        Text(
-                          _isLogin
-                              ? 'Welcome to MATCH!\nLog in here'
-                              : 'Welcome to MATCH!\nSign up here',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 25), // Solo altura en la parte inferior
+                          child: Text(
+                            _isLogin ? 'Welcome to MATCH!' : 'Welcome to MATCH!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold), // Texto en negrita
+                          ),
                         ),
                         SizedBox(height: 10),
                         Padding(
@@ -235,7 +235,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             keyboardType: TextInputType.emailAddress,
                           ),
                         ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 25),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: TextField(
@@ -250,13 +250,23 @@ class _AuthScreenState extends State<AuthScreen> {
                             obscureText: true,
                           ),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 40),
                         ElevatedButton(
                           onPressed: () => _authenticate(context),
                           style: ElevatedButton.styleFrom(
                             textStyle: TextStyle(fontSize: 18),
+                            primary: Color.fromRGBO(226, 50, 42, 1), // Color de fondo
+                            minimumSize: Size(double.infinity, 50), // Ancho y alto del botón
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40), // Radio del borde
+                            ),
                           ),
-                          child: Text(_isLogin ? 'Log in' : 'Sign Up'),
+                          child: Container(
+                            width: double.infinity,
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: Text(_isLogin ? 'Log in' : 'Sign Up'),
+                          ),
                         ),
                         SizedBox(height: 10),
                         if (_isLogin)
@@ -264,7 +274,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             onPressed: _resetPassword,
                             child: Text(
                               'Forgot Password?',
-                              style: TextStyle(fontSize: 16, color: Colors.pink),
+                              style: TextStyle(fontSize: 16, color: Colors.black),
                             ),
                           ),
                       ],
@@ -284,5 +294,41 @@ class _AuthScreenState extends State<AuthScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+}
+
+class UserInfo extends StatelessWidget {
+  final String email;
+
+  UserInfo({required this.email});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance
+          .collection('usuarios')
+          .doc(email) // Asumiendo que el documento tiene el mismo ID que el correo electrónico
+          .get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        }
+
+        if (snapshot.hasData && !snapshot.data!.exists) {
+          return Text("El usuario no existe");
+        }
+
+        var userData = snapshot.data!.data() as Map<String, dynamic>;
+        return ListTile(
+          title: Text('${userData['nombre']} ${userData['Apellido']}'),
+          subtitle: Text(userData['mail']),
+        );
+      },
+    );
   }
 }
