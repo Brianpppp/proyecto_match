@@ -12,7 +12,7 @@ class PreguntasUsuario4 extends StatefulWidget {
 
 class _PreguntasUsuario4State extends State<PreguntasUsuario4>
     with TickerProviderStateMixin {
-  int _selectedIndex = -1;
+  List<int> _selectedIndexes = []; // Lista para almacenar los índices seleccionados
   final List<String> opciones = [
     'Fiestas en casa',
     'Meditación',
@@ -33,7 +33,7 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
     'Autocine',
     'Festivales',
     'Reggaeton',
-    'Fornite',
+    'Fortnite',
     'Cuidado de la piel',
     'Guitarrista',
     'Correr',
@@ -67,7 +67,7 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
       duration: const Duration(seconds: 2),
     )..addListener(() {
       setState(() {
-        _progressValue = 0.40 + (_controller.value * 0.40); // Ajusta el valor del progreso entre 0.3 y 0.6
+        _progressValue = 0.8 + (_controller.value * 0.40); // Ajusta el valor del progreso entre 0.8 y 1
       });
     });
     _controller.forward();
@@ -80,11 +80,35 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
     super.dispose();
   }
 
-  void _seleccionarOpcion(int index) {
+  void _toggleSelection(int index) {
     setState(() {
-      _selectedIndex = index;
+      if (_selectedIndexes.contains(index)) {
+        _selectedIndexes.remove(index);
+      } else {
+        if (_selectedIndexes.length < 5) {
+          _selectedIndexes.add(index);
+        }
+      }
     });
   }
+
+  bool _isSelected(int index) {
+    return _selectedIndexes.contains(index);
+  }
+
+  bool _isButtonEnabled() {
+    return _selectedIndexes.length == 5;
+  }
+
+  String _getButtonText() {
+    if (_selectedIndexes.length == 0) {
+      return 'Next 0/5';
+    } else if (_selectedIndexes.length < 5) {
+      return 'Next ${_selectedIndexes.length}/5';
+    } else {
+      return 'Finalizar';
+    }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -122,19 +146,18 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
             child: Wrap(
               spacing: 0.0, // Elimina el espacio horizontal entre elementos
               runSpacing: 0.0, // Elimina el espacio vertical entre elementos
-              children: opciones.map((opcion) {
-                int index = opciones.indexOf(opcion);
+              children: opciones.asMap().entries.map((entry) {
+                int index = entry.key;
+                String opcion = entry.value;
                 return GestureDetector(
                   onTap: () {
-                    setState(() {
-                      _selectedIndex = index; // Actualiza el estado con el índice de la opción seleccionada
-                    });
+                    _toggleSelection(index);
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0), // Borde más circular
                     ),
-                    color: _selectedIndex == index ? Colors.green : Colors.white, // Cambia el color de fondo si está seleccionado
+                    color: _isSelected(index) ? Colors.green : Colors.white, // Cambia el color de fondo si está seleccionado
 
                     child: Padding(
                       padding: EdgeInsets.all(12.0), // Padding reducido
@@ -142,7 +165,6 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(opcion),
-                          // No mostramos el icono de verificación cuando la etiqueta está seleccionada
                         ],
                       ),
                     ),
@@ -155,20 +177,46 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
+              if (!_isButtonEnabled()) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Selección requerida"),
+                      content: Text("Por favor selecciona exactamente 5 opciones."),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text("OK"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.symmetric(vertical: 16),
               minimumSize: Size(double.infinity, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20), // Puedes ajustar el valor según tus necesidades
+              ),
+              backgroundColor: _isButtonEnabled() ? Colors.pink : Colors.grey, // Color de fondo del botón
             ),
             child: Text(
-              'Next',
-              style: TextStyle(fontSize: 20),
+              _getButtonText(),
+              style: TextStyle(fontSize: 20, color: Colors.white), // Estilo de texto del botón
             ),
           ),
+          SizedBox(height: 20), // Espacio adicional después del botón
+
         ],
       ),
     );

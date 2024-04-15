@@ -11,30 +11,30 @@ class PreguntasUsuario3 extends StatefulWidget {
 
 class _PreguntasUsuario3State extends State<PreguntasUsuario3>
     with TickerProviderStateMixin {
-  int _selectedIndex = -1;
-  final List<String> opciones = [
-    '¿Haces ejercicio?',
-    'No es mi rollo',
-    'Los findes, por socializar',
-    'Siempre que puedo',
-    'Muy de vez en cuando',
-    '¿Tienes mascotas?',
-    'Perro',
-    'Gato',
-    'Pájaro',
-    'Peces',
-    'No tengo, ¡pero me encantaría!',
-    'No me gustan los animales',
-    'Hámster',
-    'No tengo mascotas',
-    'Todo tipo de mascotas',
-    'Otros',
-    '¿Cómo te gusta recibir el amor?',
-    'Pequeños detalles',
-    'Regalos',
-    'Contacto físico',
-    'Palabras bonitas',
-    'Tiempo de calidad',
+  List<int> _selectedIndexes = [-1, -1, -1, -1];
+  final List<List<String>> opciones = [
+    [
+      'No es mi rollo',
+      'Los findes, por socializar',
+      'Siempre que puedo',
+      'Muy de vez en cuando'
+    ],
+    [
+      'Cada día',
+      'A menudo',
+      'A veces',
+      'Vivo en el gimnasio',
+      'De vez en cuando',
+      'Nunca'
+    ],
+    ['Perro', 'Gato', 'Pájaro', 'Peces', 'No tengo, ¡pero me encantaría!', 'No me gustan los animales', 'Hámster', 'Todo tipo de mascotas', 'Otros'],
+    [
+      'Pequeños detalles',
+      'Regalos',
+      'Contacto físico',
+      'Palabras bonitas',
+      'Tiempo de calidad'
+    ]
   ];
 
   late AnimationController _controller;
@@ -48,7 +48,7 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
       duration: const Duration(seconds: 2),
     )..addListener(() {
       setState(() {
-        _progressValue = 0.40 + (_controller.value * 0.40); // Ajusta el valor del progreso entre 0.3 y 0.6
+        _progressValue = 0.40 + (_controller.value * 0.40);
       });
     });
     _controller.forward();
@@ -61,14 +61,25 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
     super.dispose();
   }
 
-  void _seleccionarOpcion(int index) {
+  void _seleccionarOpcion(int listaIndex, int opcionIndex) {
     setState(() {
-      _selectedIndex = index;
+      _selectedIndexes[listaIndex] = opcionIndex;
     });
+  }
+
+  bool _isButtonEnabled() {
+    return _selectedIndexes.where((index) => index != -1).length == 4;
   }
 
   @override
   Widget build(BuildContext context) {
+    List<String> titulos = [
+      '¿Con qué frecuencia sales de fiesta?',
+      '¿Haces ejercicio?',
+      '¿Tienes mascotas?',
+      '¿Cómo te gusta recibir el amor?'
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -85,88 +96,102 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
           semanticsLabel: 'Linear progress indicator',
         ),
       ),
-      body: Column(
-        children: [
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(bottom: 20.0), // Margen inferior entre el título y las etiquetas
-              child: Text(
-                'Cuéntanos un poco sobre tus hábitos?',
-                style: TextStyle(
-                  fontSize: 46,
-                  fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20), // Espacio adicional al inicio
+            Text(
+              'Cuéntanos un poco sobre tus hábitos?',
+              style: TextStyle(
+                fontSize: 46,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.left,
+            ),
+            SizedBox(height: 20), // Espacio adicional después del título
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(opciones.length, (index) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            titulos[index],
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                        Wrap(
+                          spacing: 0.0,
+                          runSpacing: 0.0,
+                          children: opciones[index].map((opcion) {
+                            return GestureDetector(
+                              onTap: () {
+                                _seleccionarOpcion(index, opciones[index].indexOf(opcion));
+                              },
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                color: _selectedIndexes[index] == opciones[index].indexOf(opcion)
+                                    ? Colors.green
+                                    : Colors.white,
+                                child: Padding(
+                                  padding: EdgeInsets.all(12.0),
+                                  child: Text(
+                                    opcion,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    );
+                  }),
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
-          ),
-          // Mostrar preguntas estáticas
-          Expanded(
-            child: ListView.builder(
-              itemCount: opciones.length,
-              itemBuilder: (BuildContext context, int index) {
-                String opcion = opciones[index];
-                if (opcion.startsWith('¿')) {
-                  return Container(
-                    margin: EdgeInsets.all(10.0),
-                    child: Text(
-                      opcion,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                } else {
-                  return GestureDetector(
-                    onTap: () {
-                      _seleccionarOpcion(index);
-                    },
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0), // Borde más circular
-                      ),
-                      color: _selectedIndex == index ? Colors.green : Colors.white, // Cambia el color de fondo si está seleccionado
-
-                      child: Padding(
-                        padding: EdgeInsets.all(12.0), // Padding reducido
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              opcion,
-                              textAlign: TextAlign.center,
-                            ),
-                            // No mostramos el icono de verificación cuando la etiqueta está seleccionada
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }
-              },
+            SizedBox(height: 20), // Espacio adicional al final
+            SizedBox(
+              height: 20, // Añadir un espacio entre el botón y el borde inferior de la pantalla
             ),
-          ),
-
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PreguntasUsuario4()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              minimumSize: Size(double.infinity, 50),
+            ElevatedButton(
+              onPressed: _isButtonEnabled()
+                  ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PreguntasUsuario4()),
+                );
+              }
+                  : null,
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                backgroundColor: _isButtonEnabled() ? Colors.pink : Colors.grey,
+              ),
+              child: Text(
+                _selectedIndexes.contains(-1)
+                    ? 'Next ${_selectedIndexes.where((index) => index != -1).length}/4'
+                    : 'Next',
+                style: TextStyle(fontSize: 20),
+              ),
             ),
-            child: Text(
-              'Next',
-              style: TextStyle(fontSize: 20),
-            ),
-          ),
-        ],
+            SizedBox(height: 20), // Espacio adicional después del botón
+          ],
+        ),
       ),
     );
   }

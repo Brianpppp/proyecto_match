@@ -52,6 +52,9 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
       _selectedIndex = index;
     });
   }
+  bool _isButtonEnabled() {
+    return _selectedIndex != -1;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,11 +82,12 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
             SizedBox(height: 20), // Añadir espacio entre el título y los cuadros de texto
             Center(
               child: Text(
-                'Que tipo de hamburguesa te gusta?',
+                'Qué ingrediente no puede faltar en tu hamburguesa?',
                 style: TextStyle(
                   fontSize: 46,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
             SizedBox(height: 20), // Añadir más espacio entre el título y los cuadros de texto
@@ -110,7 +114,7 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
                           Text(
                             opciones[index],
                             style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 20,
                               color: _selectedIndex == index ? Colors.white : Colors.black,
                             ),
                             textAlign: TextAlign.center,
@@ -123,20 +127,47 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
               ),
             ),
             SizedBox(height: 20), // Añadir espacio entre los cuadros de texto y el botón
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PreguntasUsuario3()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                minimumSize: Size(double.infinity, 50),
-              ),
-              child: Text(
-                'Next',
-                style: TextStyle(fontSize: 20),
+            Container(
+              margin: EdgeInsets.only(bottom: 30), // Puedes ajustar el valor según tus necesidades
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_selectedIndex != -1) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PreguntasUsuario3()),
+                    );
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Selección requerida"),
+                          content: Text("Por favor selecciona un ingrediente."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("OK"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20), // Puedes ajustar el valor según tus necesidades
+                  ),
+                  backgroundColor: _isButtonEnabled() ? Colors.pink : Colors.grey,
+                ),
+                child: Text(
+                  _selectedIndex != -1 ? 'Next' : 'Next',
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
             ),
           ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'preguntas_usuario2.dart';
-import 'login_registro_screen.dart'; // Importa el archivo login_registro_screen.dart
+import 'login_registro_screen.dart';
 
 class PreguntasUsuario extends StatefulWidget {
   final String email;
@@ -49,6 +49,9 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
       _selectedIndex = index;
     });
   }
+  bool _isButtonEnabled() {
+    return _selectedIndex != -1;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +65,11 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0), // Agregar un margen uniforme alrededor de los elementos
+        padding: EdgeInsets.all(8.0), // Agregar un margen uniforme alrededor de los elementos
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 20), // Añadir espacio entre el título y los cuadros de texto
+            SizedBox(height: 20), // Añadir más espacio entre el título y los cuadros de texto
             Center(
               child: Text(
                 'Que tipo de hamburguesa te gusta?',
@@ -74,6 +77,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                   fontSize: 46,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
             SizedBox(height: 20), // Añadir más espacio entre el título y los cuadros de texto
@@ -100,7 +104,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                           Text(
                             opciones[index],
                             style: TextStyle(
-                              fontSize: 30, // Cambia el tamaño de la letra aquí
+                              fontSize: 26, // Cambia el tamaño de la letra aquí
                               color: _selectedIndex == index ? Colors.white : Colors.black,
                             ),
                             textAlign: TextAlign.center, // Alinea el texto al centro
@@ -113,20 +117,47 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
               ),
             ),
             SizedBox(height: 20), // Añadir espacio entre los cuadros de texto y el botón
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PreguntasUsuario2()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16),
-                minimumSize: Size(double.infinity, 50),
-              ),
-              child: Text(
-                'Next',
-                style: TextStyle(fontSize: 20),
+            Container(
+              margin: EdgeInsets.only(bottom: 30), // Puedes ajustar el valor según tus necesidades
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_selectedIndex != -1) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PreguntasUsuario2()),
+                    );
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text("Selección requerida"),
+                          content: Text("Por favor selecciona un tipo de hamburguesa."),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("OK"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  minimumSize: Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20), // Puedes ajustar el valor según tus necesidades
+                  ),
+                  backgroundColor: _isButtonEnabled() ? Colors.pink : Colors.grey,
+                ),
+                child: Text(
+                  _selectedIndex != -1 ? 'Next' : 'Next',
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
             ),
             //UserInfo(email: widget.email), // Agregar UserInfo aquí
