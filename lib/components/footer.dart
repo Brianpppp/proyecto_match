@@ -13,23 +13,18 @@ class _FooterState extends State<Footer> {
       _selectedIndex = index;
     });
 
-    // Aquí puedes agregar lógica para navegar a diferentes páginas
     switch (_selectedIndex) {
       case 0:
-      // Navegar a la página de inicio
-       Navigator.pushNamed(context, '/home_screen');
+        Navigator.pushNamed(context, '/home_screen');
         break;
       case 1:
-      // Navegar a la página de menú de comida rápida
-       Navigator.pushNamed(context, '/menu');
+        Navigator.pushNamed(context, '/menu');
         break;
       case 2:
-      // Navegar a la página del carrito de compras
-      Navigator.pushNamed(context, '/store_points');
+        Navigator.pushNamed(context, '/store_points');
         break;
       case 3:
-      // Navegar a la página de perfil de usuario
-       Navigator.pushNamed(context, '/user');
+        Navigator.pushNamed(context, '/user');
         break;
     }
   }
@@ -46,32 +41,20 @@ class _FooterState extends State<Footer> {
       onTap: _onItemTapped,
       items: [
         BottomNavigationBarItem(
-          icon: Container(
-            child: Icon(Icons.home),
-            alignment: Alignment.center,
-          ),
-          label: '',
+          icon: Icon(Icons.home),
+          label: 'Inicio',
         ),
         BottomNavigationBarItem(
-          icon: Container(
-            child: Icon(Icons.fastfood_sharp),
-            alignment: Alignment.center,
-          ),
-          label: '',
+          icon: Icon(Icons.fastfood_sharp),
+          label: 'Menú',
         ),
         BottomNavigationBarItem(
-          icon: Container(
-            child: Icon(Icons.map),
-            alignment: Alignment.center,
-          ),
-          label: '',
+          icon: Icon(Icons.map),
+          label: 'Tienda',
         ),
         BottomNavigationBarItem(
-          icon: Container(
-            child: Icon(Icons.person),
-            alignment: Alignment.center,
-          ),
-          label: '',
+          icon: Icon(Icons.person),
+          label: 'Perfil',
         ),
       ],
     );
