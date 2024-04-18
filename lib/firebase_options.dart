@@ -78,3 +78,24 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.todolistFirebase.RunnerTests',
   );
 }
+/*rules_version = '2';
+service cloud.firestore {
+match /databases/{database}/documents {
+// Reglas para la colección 'todos'
+match /todos/{document=**} {
+allow read, write: if request.auth != null && request.auth.uid == resource.data['UID de usuario'];
+}
+}
+}
+*/
+
+/*service cloud.firestore {
+match /databases/{database}/documents {
+// Permitir leer y escribir en todas las colecciones
+match /{document=**} {
+allow read, write: if true;
+}
+}
+}*/
+
+

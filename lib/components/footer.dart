@@ -1,42 +1,60 @@
 import 'package:flutter/material.dart';
 
-class Footer extends StatelessWidget {
+class Footer extends StatefulWidget {
+  @override
+  _FooterState createState() => _FooterState();
+}
+
+class _FooterState extends State<Footer> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (_selectedIndex) {
+      case 0:
+        Navigator.pushNamed(context, '/home_screen');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/menu');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/store_points');
+        break;
+      case 3:
+        Navigator.pushNamed(context, '/user');
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: Colors.white, // Fondo blanco
-      selectedItemColor: Colors.grey[800], // Color oscuro para los iconos seleccionados
-      unselectedItemColor: Colors.grey[600], // Color para los iconos no seleccionados
-      type: BottomNavigationBarType.fixed, // Para alinear los íconos verticalmente
+      backgroundColor: Colors.white,
+      selectedItemColor: Colors.grey[600],
+      unselectedItemColor: Colors.grey[600],
+      type: BottomNavigationBarType.fixed,
       iconSize: 40,
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
       items: [
         BottomNavigationBarItem(
-          icon: Container(
-            child: Icon(Icons.home),
-            alignment: Alignment.center,
-          ),
-          label: '', // Etiqueta vacía
+          icon: Icon(Icons.home),
+          label: 'Inicio',
         ),
         BottomNavigationBarItem(
-          icon: Container(
-            child: Icon(Icons.fastfood_sharp),
-            alignment: Alignment.center,
-          ),
-          label: '',
+          icon: Icon(Icons.fastfood_sharp),
+          label: 'Menú',
         ),
         BottomNavigationBarItem(
-          icon: Container(
-            child: Icon(Icons.shopping_cart),
-            alignment: Alignment.center,
-          ),
-          label: '',
+          icon: Icon(Icons.map),
+          label: 'Tienda',
         ),
         BottomNavigationBarItem(
-          icon: Container(
-            child: Icon(Icons.person),
-            alignment: Alignment.center,
-          ),
-          label: '',
+          icon: Icon(Icons.person),
+          label: 'Perfil',
         ),
       ],
     );
