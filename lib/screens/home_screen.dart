@@ -185,8 +185,8 @@ class ImageSection extends StatelessWidget {
                         alignment: Alignment.center,
                         child: Image.network(
                           hamburguesas[index].url,
-                          width: MediaQuery.of(context).size.width * 0.6,
-                          height: MediaQuery.of(context).size.height * 0.3,
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          height: MediaQuery.of(context).size.height * 0.2,
                           fit: BoxFit.cover,
                         ),
                       ),
