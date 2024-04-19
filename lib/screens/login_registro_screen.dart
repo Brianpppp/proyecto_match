@@ -69,8 +69,22 @@ class _AuthScreenState extends State<AuthScreen> {
       if (userCredential.user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Log in successful!'),
+            content: Container(
+              alignment: Alignment.center, // Centra el contenido del SnackBar
+              child: Padding(
+                padding: EdgeInsets.only(top: 0.0), // Ajusta el margen superior del contenido
+                child: Text(
+                  'Log in successful!',
+                  style: TextStyle(fontSize: 18.0), // Aumenta el tamaño de la letra
+                ),
+              ),
+            ),
             duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating, // Cambia el comportamiento del SnackBar a flotante
+            shape: RoundedRectangleBorder( // Cambia la forma del SnackBar
+              borderRadius: BorderRadius.circular(100.0),
+            ),
+            margin: EdgeInsets.only(bottom: 120.0, left: 40.0, right: 40.0), // Ajusta el margen del SnackBar para cambiar su posición
           ),
         );
         // Navegar a la pantalla PreguntasUsuario

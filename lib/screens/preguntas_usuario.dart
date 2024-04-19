@@ -71,6 +71,10 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
         title: LinearProgressIndicator(
           value: _progressValue,
           semanticsLabel: 'Linear progress indicator',
+          backgroundColor: Colors.grey[300], // Color de fondo de la barra de progreso
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Color.fromRGBO(226, 169, 209, 1.0), // Color de la barra de progreso
+          ),
         ),
       ),
       body: Padding(
@@ -107,8 +111,9 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                         borderRadius: BorderRadius.circular(10),
                       ),
                       color: _selectedIndex == index
-                          ? Color.fromRGBO(226, 50, 42, 1)
+                          ? Color.fromRGBO(226, 169, 209, 1.0) // Utiliza el color personalizado
                           : Colors.white,
+
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -168,7 +173,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  backgroundColor: _isButtonEnabled() ? Colors.pink : Colors.grey,
+                  backgroundColor: _isButtonEnabled() ? Color.fromRGBO(226, 169, 209, 1.0) : Colors.grey,
                 ),
                 child: Text(
                   _selectedIndex != -1 ? 'Next' : 'Next',
