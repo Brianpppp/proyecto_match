@@ -12,12 +12,18 @@ class _HomeScreenState extends State<HomeScreen> {
   late PageController _pageController;
   int _currentPageIndex = 0;
   List<Hamburguesa> hamburguesas = [];
+  List<Bebida> bebidas = [];
+  List<Snack> snacks = [];
+  List<Postre> postres = [];
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _fetchHamburguesas();
+    _fetchBebidas();
+    _fetchSnacks();
+    _fetchPostres();
   }
 
   void _fetchHamburguesas() async {
@@ -29,8 +35,46 @@ class _HomeScreenState extends State<HomeScreen> {
         hamburguesas = list;
       });
     } catch (e) {
-      // Manejar errores al obtener hamburguesas
       print('Error fetching hamburguesas: $e');
+    }
+  }
+
+  void _fetchBebidas() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('bebida').get();
+      List<Bebida> list = querySnapshot.docs.map((doc) => Bebida.fromSnapshot(doc)).toList();
+
+      setState(() {
+        bebidas = list;
+      });
+    } catch (e) {
+      print('Error fetching bebidas: $e');
+    }
+  }
+
+  void _fetchSnacks() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('snack').get();
+      List<Snack> list = querySnapshot.docs.map((doc) => Snack.fromSnapshot(doc)).toList();
+
+      setState(() {
+        snacks = list;
+      });
+    } catch (e) {
+      print('Error fetching snacks: $e');
+    }
+  }
+
+  void _fetchPostres() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('postre').get();
+      List<Postre> list = querySnapshot.docs.map((doc) => Postre.fromSnapshot(doc)).toList();
+
+      setState(() {
+        postres = list;
+      });
+    } catch (e) {
+      print('Error fetching postres: $e');
     }
   }
 
@@ -53,8 +97,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundColor = Color.fromRGBO(255, 169, 209, 1);
+
     return Scaffold(
-      backgroundColor: Color.fromRGBO(255, 169, 209, 1.0),
+      backgroundColor: backgroundColor,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -62,9 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
           PhraseAndTexts(),
           Expanded(
             flex: 1,
-            child: ImageSection(
+            child: TabSection(
               hamburguesas: hamburguesas,
-              pageController: _pageController,
+              bebida: bebidas,
+              snacks: snacks,
+              postres: postres,
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -104,107 +152,345 @@ class PhraseAndTexts extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-          color: Color.fromRGBO(255, 169, 209, 1.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Food', style: TextStyle(color: Colors.black, fontSize: MediaQuery.of(context).size.width * 0.04, fontWeight: FontWeight.bold)),
-              Text('Drinks', style: TextStyle(color: Colors.black, fontSize: MediaQuery.of(context).size.width * 0.04, fontWeight: FontWeight.bold)),
-              Text('Snacks', style: TextStyle(color: Colors.black, fontSize: MediaQuery.of(context).size.width * 0.04, fontWeight: FontWeight.bold)),
-              Text('Desserts', style: TextStyle(color: Colors.black, fontSize: MediaQuery.of(context).size.width * 0.04, fontWeight: FontWeight.bold)),
+      ],
+    );
+  }
+}
+
+class TabSection extends StatelessWidget {
+  final List<Hamburguesa> hamburguesas;
+  final List<Bebida> bebida;
+  final List<Snack> snacks;
+  final List<Postre> postres;
+
+  const TabSection({Key? key, required this.hamburguesas, required this.bebida, required this.snacks, required this.postres}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 4,
+      child: Column(
+        children: [
+          TabBar(
+            labelColor: Colors.black,
+            tabs: [
+              Tab(text: 'Food'),
+              Tab(text: 'Drinks'),
+              Tab(text: 'Snacks'),
+              Tab(text: 'Desserts'),
             ],
           ),
-        ),
-      ],
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          Expanded(
+            child: TabBarView(
+              children: [
+                ImageSection(hamburguesas: hamburguesas),
+                ImageSection(bebida: bebida),
+                ImageSection(snacks: snacks),
+                ImageSection(postres: postres),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
 class ImageSection extends StatelessWidget {
   final List<Hamburguesa> hamburguesas;
-  final PageController pageController;
+  final List<Bebida> bebida;
+  final List<Snack> snacks;
+  final List<Postre> postres;
 
-  const ImageSection({Key? key, required this.hamburguesas, required this.pageController}) : super(key: key);
+  const ImageSection({Key? key, this.hamburguesas = const [], this.bebida = const [], this.snacks = const [], this.postres = const []}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return PageView.builder(
+      itemCount: hamburguesas.length + bebida.length + snacks.length + postres.length,
+      itemBuilder: (context, index) {
+        // Lógica para construir las tarjetas de cada tipo de comida
+        if (index < hamburguesas.length) {
+          return _buildHamburguesaCard(context, index);
+        } else if (index < hamburguesas.length + bebida.length) {
+          int bebidaIndex = index - hamburguesas.length;
+          return _buildBebidaCard(context, bebidaIndex);
+        } else if (index < hamburguesas.length + bebida.length + snacks.length) {
+          int snackIndex = index - hamburguesas.length - bebida.length;
+          return _buildSnackCard(context, snackIndex);
+        } else {
+          int postreIndex = index - hamburguesas.length - bebida.length - snacks.length;
+          return _buildPostreCard(context, postreIndex);
+        }
+      },
+    );
+  }
+
+  // Construir tarjeta de hamburguesa
+  Widget _buildHamburguesaCard(BuildContext context, int index) {
     return Container(
-      color: Color.fromRGBO(255, 169, 209, 1.0),
-      child: PageView.builder(
-        controller: pageController,
-        itemCount: hamburguesas.length,
-        itemBuilder: (context, index) {
-          return AnimatedSwitcher(
-            duration: Duration(milliseconds: 500),
-            child: Container(
-              key: ValueKey<int>(index),
-              margin: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.height * 0.03,
-                horizontal: MediaQuery.of(context).size.width * 0.03,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30.0),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    spreadRadius: 0,
-                    blurRadius: 10,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(30.0),
-                child: Container(
-                  color: Colors.white, // Fondo blanco
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              hamburguesas[index].nombre,
-                              style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.06),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                            Text(
-                              'Precio: \$${hamburguesas[index].precio}',
-                              style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Image.network(
-                          hamburguesas[index].url,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          height: MediaQuery.of(context).size.height * 0.2,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                        child: Text(
-                          hamburguesas[index].descripcion,
-                          style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
-                        ),
-                      ),
-                    ],
-                  ),
+      margin: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.03,
+        horizontal: MediaQuery.of(context).size.width * 0.03,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30.0),
+        child: Container(
+          color: Colors.white, // Fondo blanco
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      hamburguesas[index].nombre,
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.06),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    Text(
+                      'Precio: \$${hamburguesas[index].precio}',
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          );
-        },
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Align(
+                alignment: Alignment.center,
+                child: Image.network(
+                  hamburguesas[index].url,
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Text(
+                  hamburguesas[index].descripcion,
+                  style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Construir tarjeta de bebida
+  Widget _buildBebidaCard(BuildContext context, int index) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.03,
+        horizontal: MediaQuery.of(context).size.width * 0.03,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30.0),
+        child: Container(
+          color: Colors.white, // Fondo blanco
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      bebida[index].nombre,
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.06),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    Text(
+                      'Precio: \$${bebida[index].precio}',
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Align(
+                alignment: Alignment.center,
+                child: Image.network(
+                  bebida[index].url,
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Text(
+                  bebida[index].descripcion,
+                  style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Construir tarjeta de snack
+  Widget _buildSnackCard(BuildContext context, int index) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.03,
+        horizontal: MediaQuery.of(context).size.width * 0.03,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30.0),
+        child: Container(
+          color: Colors.white, // Fondo blanco
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      snacks[index].nombre,
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.06),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    Text(
+                      'Precio: \$${snacks[index].precio}',
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Align(
+                alignment: Alignment.center,
+                child: Image.network(
+                  snacks[index].url,
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Text(
+                  snacks[index].descripcion,
+                  style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Construir tarjeta de postre
+  Widget _buildPostreCard(BuildContext context, int index) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.03,
+        horizontal: MediaQuery.of(context).size.width * 0.03,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 0,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30.0),
+        child: Container(
+          color: Colors.white, // Fondo blanco
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      postres[index].nombre,
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.06),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    Text(
+                      'Precio: \$${postres[index].precio}',
+                      style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Align(
+                alignment: Alignment.center,
+                child: Image.network(
+                  postres[index].url,
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Text(
+                  postres[index].descripcion,
+                  style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -268,7 +554,52 @@ class Hamburguesa {
 
   Hamburguesa.fromSnapshot(DocumentSnapshot snapshot):
         nombre = snapshot['nombre'],
-        precio = snapshot['precio'],
+        precio = snapshot['precio'].toDouble(),
+        descripcion = snapshot['descripcion'],
+        url = snapshot['url'];
+}
+
+class Bebida {
+  final String nombre;
+  final double precio;
+  final String descripcion;
+  final String url;
+
+  Bebida({required this.nombre, required this.precio, required this.descripcion, required this.url});
+
+  Bebida.fromSnapshot(DocumentSnapshot snapshot):
+        nombre = snapshot['nombre'],
+        precio = snapshot['precio'].toDouble(),
+        descripcion = snapshot['descripcion'],
+        url = snapshot['url'];
+}
+
+class Snack {
+  final String nombre;
+  final double precio;
+  final String descripcion;
+  final String url;
+
+  Snack({required this.nombre, required this.precio, required this.descripcion, required this.url});
+
+  Snack.fromSnapshot(DocumentSnapshot snapshot):
+        nombre = snapshot['nombre'],
+        precio = snapshot['precio'].toDouble(),
+        descripcion = snapshot['descripcion'],
+        url = snapshot['url'];
+}
+
+class Postre {
+  final String nombre;
+  final double precio;
+  final String descripcion;
+  final String url;
+
+  Postre({required this.nombre, required this.precio, required this.descripcion, required this.url});
+
+  Postre.fromSnapshot(DocumentSnapshot snapshot):
+        nombre = snapshot['nombre'],
+        precio = snapshot['precio'].toDouble(),
         descripcion = snapshot['descripcion'],
         url = snapshot['url'];
 }
