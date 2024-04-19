@@ -130,13 +130,14 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
       ),
       body: Column(
         children: [
+          SizedBox(height: 20), // Añade espacio adicional antes del título
           Center(
             child: Container(
-              margin: EdgeInsets.only(bottom: 20.0), // Margen inferior entre el título y las etiquetas
+              margin: EdgeInsets.only(bottom: 40.0), // Margen inferior entre el título y las etiquetas
               child: Text(
                 'Cual es tu rollo?',
                 style: TextStyle(
-                  fontSize: 46,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -157,7 +158,7 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0), // Borde más circular
                     ),
-                    color: _isSelected(index) ? Colors.green : Colors.white, // Cambia el color de fondo si está seleccionado
+                    color: _isSelected(index) ? Color.fromRGBO(226, 50, 42, 1) : Colors.white, // Cambia el color de fondo si está seleccionado
 
                     child: Padding(
                       padding: EdgeInsets.all(12.0), // Padding reducido
@@ -174,7 +175,7 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
             ),
           ),
 
-          SizedBox(height: 20),
+          SizedBox(height: 40),
           ElevatedButton(
             onPressed: () {
               if (!_isButtonEnabled()) {
@@ -216,9 +217,9 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
             ),
           ),
           SizedBox(height: 20), // Espacio adicional después del botón
-
         ],
       ),
+
     );
   }
 }

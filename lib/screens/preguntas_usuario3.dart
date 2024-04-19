@@ -48,7 +48,7 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
       duration: const Duration(seconds: 2),
     )..addListener(() {
       setState(() {
-        _progressValue = 0.40 + (_controller.value * 0.40);
+        _progressValue = 0.30 + (_controller.value * 0.40);
       });
     });
     _controller.forward();
@@ -101,16 +101,16 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20), // Espacio adicional al inicio
+            SizedBox(height: 10), // Espacio adicional al inicio
             Text(
               'Cuéntanos un poco sobre tus hábitos?',
               style: TextStyle(
-                fontSize: 46,
+                fontSize: 40,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.left,
             ),
-            SizedBox(height: 20), // Espacio adicional después del título
+            SizedBox(height: 40), // Espacio adicional después del título
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -142,7 +142,7 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
                                 color: _selectedIndexes[index] == opciones[index].indexOf(opcion)
-                                    ? Colors.green
+                                    ? Color.fromRGBO(226, 50, 42, 1)
                                     : Colors.white,
                                 child: Padding(
                                   padding: EdgeInsets.all(12.0),

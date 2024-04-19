@@ -12,15 +12,28 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
     with TickerProviderStateMixin {
   int _selectedIndex = -1;
   final List<String> opciones = [
-    '🍅 \nTOMATE',
-    '🥒 \nPEPINILLOS',
-    '🧀 \nQUESO',
-    '🥓 \nBACON',
-    '🍳 \nHUEVO',
-    '🥬 \nLECHUGA',
-    '🧅 \nCEBOLLA',
-    '🥫 \nSALSA',
-    '🤔 \nNO LO TENGO CLARO',
+    'TOMATE',
+    'PEPINILLOS',
+    'QUESO',
+    'BACON',
+    'HUEVO',
+    'LECHUGA',
+    'CEBOLLA',
+    'SALSA',
+    'NO LO TENGO CLARO',
+  ];
+
+  // Lista de rutas de imágenes correspondientes a cada opción
+  final List<String> imagenes = [
+    'icono_tomate.png',
+    'icono_pepino.png',
+    'icono_queso.png',
+    'icono_bacon.png',
+    'icono_huevo.png',
+    'icono_lechuga.png',
+    'icono_cebolla.png',
+    'icono_salsa.png',
+    'icono_pensar.png',
   ];
 
   late AnimationController _controller;
@@ -34,7 +47,7 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
       duration: const Duration(seconds: 2),
     )..addListener(() {
       setState(() {
-        _progressValue = 0.10 + (_controller.value * 0.40); // Ajusta el valor del progreso entre 0.3 y 0.6
+        _progressValue = 0.10 + (_controller.value * 0.30); // Ajusta el valor del progreso entre 0.3 y 0.6
       });
     });
     _controller.forward();
@@ -52,6 +65,7 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
       _selectedIndex = index;
     });
   }
+
   bool _isButtonEnabled() {
     return _selectedIndex != -1;
   }
@@ -79,18 +93,18 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 20), // Añadir espacio entre el título y los cuadros de texto
+            SizedBox(height: 10), // Añadir espacio entre el título y los cuadros de texto
             Center(
               child: Text(
                 'Qué ingrediente no puede faltar en tu hamburguesa?',
                 style: TextStyle(
-                  fontSize: 46,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 20), // Añadir más espacio entre el título y los cuadros de texto
+            SizedBox(height: 40), // Añadir más espacio entre el título y los cuadros de texto
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -107,15 +121,23 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      color: _selectedIndex == index ? Colors.green : Colors.white,
+                      color: _selectedIndex == index
+                          ? Color.fromRGBO(226, 50, 42, 1)
+                          : Colors.white,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Image.asset(
+                            'assets/${imagenes[index]}',
+                            height: 50, // Ajusta la altura de la imagen según sea necesario
+                          ),
                           Text(
                             opciones[index],
                             style: TextStyle(
-                              fontSize: 20,
-                              color: _selectedIndex == index ? Colors.white : Colors.black,
+                              fontSize: 16,
+                              color: _selectedIndex == index
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -134,7 +156,8 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
                   if (_selectedIndex != -1) {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PreguntasUsuario3()),
+                      MaterialPageRoute(
+                          builder: (context) => PreguntasUsuario3()),
                     );
                   } else {
                     showDialog(
@@ -160,9 +183,10 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
                   padding: EdgeInsets.symmetric(vertical: 16),
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20), // Puedes ajustar el valor según tus necesidades
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  backgroundColor: _isButtonEnabled() ? Colors.pink : Colors.grey,
+                  backgroundColor:
+                  _isButtonEnabled() ? Colors.pink : Colors.grey,
                 ),
                 child: Text(
                   _selectedIndex != -1 ? 'Next' : 'Next',

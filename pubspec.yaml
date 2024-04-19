@@ -31,6 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_xlider: ^3.5.0
+  flutter_emoji: ^2.0.0
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -65,6 +67,19 @@ flutter:
     - assets/match1.png
     - assets/match2.png
     - assets/match3.png
+    - assets/icono_hamburguesa.png
+    - assets/icono_ensaladavegana.png
+    - assets/icono_queso.png
+    - assets/icono_pepino.png
+    - assets/icono_tomate.png
+    - assets/icono_bacon.png
+    - assets/icono_pensar.png
+    - assets/icono_salsa.png
+    - assets/icono_cebolla.png
+    - assets/icono_lechuga.png
+    - assets/icono_huevo.png
+
+
 
 
 

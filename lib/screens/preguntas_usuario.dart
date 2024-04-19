@@ -15,10 +15,18 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
     with SingleTickerProviderStateMixin {
   int _selectedIndex = -1;
   final List<String> opciones = [
-    '🍔\nTernera',
-    '🍗\nPollo',
-    '🥗\nEnsalada Vegana',
-    '🐷\nCerdo',
+    'Ternera',
+    'Pollo',
+    'Ensalada Vegana',
+    'Cerdo',
+  ];
+
+  // Lista de rutas de imágenes correspondientes a cada opción
+  final List<String> imagenes = [
+    'icono_hamburguesa.png',
+    'icono_pollo.png',
+    'icono_ensaladavegana.png',
+    'icono_cerdo.png',
   ];
 
   late AnimationController _controller;
@@ -31,7 +39,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
       duration: const Duration(seconds: 2),
     )..addListener(() {
       setState(() {
-        _progressValue = 0.01 + (_controller.value * 0.10); // Ajusta el valor del progreso entre 0.01 y 0.10
+        _progressValue = 0.01 + (_controller.value * 0.10);
       });
     });
     _controller.forward();
@@ -49,6 +57,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
       _selectedIndex = index;
     });
   }
+
   bool _isButtonEnabled() {
     return _selectedIndex != -1;
   }
@@ -65,22 +74,22 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(8.0), // Agregar un margen uniforme alrededor de los elementos
+        padding: EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: 20), // Añadir más espacio entre el título y los cuadros de texto
+            SizedBox(height: 10),
             Center(
               child: Text(
                 'Que tipo de hamburguesa te gusta?',
                 style: TextStyle(
-                  fontSize: 46,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 20), // Añadir más espacio entre el título y los cuadros de texto
+            SizedBox(height: 40),
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -97,28 +106,35 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      color: _selectedIndex == index ? Colors.green : Colors.white,
+                      color: _selectedIndex == index
+                          ? Color.fromRGBO(226, 50, 42, 1)
+                          : Colors.white,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Image.asset(
+                            imagenes[index], // Utiliza la ruta de imagen correspondiente
+                            height: 50, // Ajusta la altura de la imagen según sea necesario
+                          ),
                           Text(
                             opciones[index],
                             style: TextStyle(
-                              fontSize: 26, // Cambia el tamaño de la letra aquí
+                              fontSize: 26,
                               color: _selectedIndex == index ? Colors.white : Colors.black,
                             ),
-                            textAlign: TextAlign.center, // Alinea el texto al centro
+                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),
+
                     ),
                   );
                 },
               ),
             ),
-            SizedBox(height: 20), // Añadir espacio entre los cuadros de texto y el botón
+            SizedBox(height: 20),
             Container(
-              margin: EdgeInsets.only(bottom: 30), // Puedes ajustar el valor según tus necesidades
+              margin: EdgeInsets.only(bottom: 30),
               child: ElevatedButton(
                 onPressed: () {
                   if (_selectedIndex != -1) {
@@ -150,7 +166,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                   padding: EdgeInsets.symmetric(vertical: 16),
                   minimumSize: Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20), // Puedes ajustar el valor según tus necesidades
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   backgroundColor: _isButtonEnabled() ? Colors.pink : Colors.grey,
                 ),
@@ -160,7 +176,6 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                 ),
               ),
             ),
-            //UserInfo(email: widget.email), // Agregar UserInfo aquí
           ],
         ),
       ),

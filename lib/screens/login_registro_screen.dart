@@ -134,9 +134,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(255, 169, 209, 1.0), // Color de fondo rosa
-      appBar: AppBar(
-        title: Text(_isLogin ? 'Log in' : 'Sign Up'),
-      ),
+
       body: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -151,7 +149,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 60),
               SizedBox(
                 width: 350, // Anchura deseada para la tarjeta
                 child: Card(
