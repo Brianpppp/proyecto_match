@@ -269,7 +269,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               keyboardType: TextInputType.text,
                             ),
                           ),
-                        SizedBox(height: 10),
+                        SizedBox(height: 20),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: TextField(
