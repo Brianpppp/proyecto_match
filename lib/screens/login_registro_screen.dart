@@ -41,6 +41,7 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _isLogin = true;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _usernameController = TextEditingController(); // Nuevo controlador para el nombre de usuario
 
   Future<void> _authenticate(BuildContext context) async {
     setState(() {
@@ -105,7 +106,26 @@ class _AuthScreenState extends State<AuthScreen> {
         password: _passwordController.text,
       );
       if (userCredential.user != null) {
-        // Navigate to your desired screen after successful registration
+        // Guardar el nombre de usuario en Firestore
+        await FirebaseFirestore.instance.collection('usuarios').doc(_emailController.text).set({
+          'nombre': _usernameController.text, // Guarda el nombre de usuario en Firestore
+          'mail': _emailController.text,
+        });
+
+        // Mostrar mensaje de éxito
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Registration successful!'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+
+        // Navegar al apartado de login después de un breve retraso
+        Future.delayed(Duration(seconds: 2), () {
+          setState(() {
+            _isLogin = true;
+          });
+        });
       }
     } on FirebaseAuthException catch (error) {
       _showErrorDialog(error.message ?? 'An error occurred');
@@ -232,6 +252,23 @@ class _AuthScreenState extends State<AuthScreen> {
                             style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold), // Texto en negrita
                           ),
                         ),
+                        SizedBox(height: 1),
+                        // Campo de texto para el nombre de usuario
+                        if (!_isLogin)
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: TextField(
+                              controller: _usernameController,
+                              decoration: InputDecoration(
+                                labelText: 'Username',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                              ),
+                              keyboardType: TextInputType.text,
+                            ),
+                          ),
                         SizedBox(height: 10),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -247,7 +284,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             keyboardType: TextInputType.emailAddress,
                           ),
                         ),
-                        SizedBox(height: 25),
+                        SizedBox(height: 20 ),
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: TextField(
@@ -305,6 +342,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _usernameController.dispose(); // Dispose del controlador de nombre de usuario
     super.dispose();
   }
 }
