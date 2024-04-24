@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:todolist_firebase/screens/home_screen.dart';
 import 'package:todolist_firebase/screens/menu_card.dart';
+import 'package:todolist_firebase/screens/personal_info.dart';
 import 'package:todolist_firebase/screens/store_points.dart';
 import 'package:todolist_firebase/screens/user.dart';
 import 'firebase_options.dart';
@@ -19,7 +20,7 @@ void main() async {
   runApp(MyApp());
 }
 
-/*class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,17 +35,18 @@ void main() async {
         '/menu': (context) => MenuPage(),
         '/store_points': (context) => StorePage(),
         '/user': (context) => UserPage(),
+        '/personal_info':(context)=> info(),
       },
     );
   }
-}*/
+}
 
-class MyApp extends StatelessWidget {
+ /*class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Mi App',
-      home: HomeScreen(),
+      home: UserPage(),
     );
   }
-}
+}*/
