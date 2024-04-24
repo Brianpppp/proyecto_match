@@ -48,7 +48,7 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
       duration: const Duration(seconds: 2),
     )..addListener(() {
       setState(() {
-        _progressValue = 0.40 + (_controller.value * 0.40);
+        _progressValue = 0.30 + (_controller.value * 0.40);
       });
     });
     _controller.forward();
@@ -89,11 +89,15 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
           onPressed: () {
             Navigator.pop(context);
           },
-          color: Colors.pink,
+          color: Color.fromRGBO(226, 169, 209, 1.0), // Usando el mismo color
         ),
         title: LinearProgressIndicator(
           value: _progressValue,
           semanticsLabel: 'Linear progress indicator',
+          backgroundColor: Colors.grey[300], // Color de fondo de la barra de progreso
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Color.fromRGBO(226, 169, 209, 1.0), // Color de la barra de progreso
+          ),
         ),
       ),
       body: Padding(
@@ -101,16 +105,16 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20), // Espacio adicional al inicio
+            SizedBox(height: 10), // Espacio adicional al inicio
             Text(
               'Cuéntanos un poco sobre tus hábitos?',
               style: TextStyle(
-                fontSize: 46,
+                fontSize: 40,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.left,
             ),
-            SizedBox(height: 20), // Espacio adicional después del título
+            SizedBox(height: 40), // Espacio adicional después del título
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -142,7 +146,7 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
                                 color: _selectedIndexes[index] == opciones[index].indexOf(opcion)
-                                    ? Colors.green
+                                    ? Color.fromRGBO(226, 169, 209, 1.0)
                                     : Colors.white,
                                 child: Padding(
                                   padding: EdgeInsets.all(12.0),
@@ -180,7 +184,7 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                backgroundColor: _isButtonEnabled() ? Colors.pink : Colors.grey,
+                backgroundColor: _isButtonEnabled() ? Color.fromRGBO(226, 169, 209, 1.0) : Colors.grey,
               ),
               child: Text(
                 _selectedIndexes.contains(-1)

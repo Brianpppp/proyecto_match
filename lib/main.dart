@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
       ),
-      home: AuthScreen(), // Utiliza AuthScreen como la pantalla principal
+      home: AuthScreen(), // Utiliza AuthScreen como la pantalla principalkk
       routes: {
         '/home_screen': (context)=> HomeScreen(),
         '/menu': (context) => MenuPage(),
