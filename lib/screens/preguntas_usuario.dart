@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'preguntas_usuario2.dart';
 import 'login_registro_screen.dart';
 
@@ -11,24 +13,11 @@ class PreguntasUsuario extends StatefulWidget {
   _PreguntasUsuarioState createState() => _PreguntasUsuarioState();
 }
 
-class _PreguntasUsuarioState extends State<PreguntasUsuario>
-    with SingleTickerProviderStateMixin {
+class _PreguntasUsuarioState extends State<PreguntasUsuario> with SingleTickerProviderStateMixin {
+
   int _selectedIndex = -1;
-  final List<String> opciones = [
-    'Ternera',
-    'Pollo',
-    'Ensalada Vegana',
-    'Cerdo',
-  ];
-
-  // Lista de rutas de imágenes correspondientes a cada opción
-  final List<String> imagenes = [
-    'icono_hamburguesa.png',
-    'icono_pollo.png',
-    'icono_ensaladavegana.png',
-    'icono_cerdo.png',
-  ];
-
+  final List<String> opciones = ['Ternera', 'Pollo', 'Ensalada Vegana', 'Cerdo'];
+  final List<String> imagenes = ['icono_hamburguesa.png', 'icono_pollo.png', 'icono_ensaladavegana.png', 'icono_cerdo.png'];
   late AnimationController _controller;
   double _progressValue = 0.0;
 
@@ -62,6 +51,47 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
     return _selectedIndex != -1;
   }
 
+  void _guardarRespuestaEnFirebase() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Obtener la etiqueta seleccionada por el usuario
+        String etiquetaSeleccionada = '';
+
+        // Agregar la etiqueta seleccionada si existe
+        if (_selectedIndex != -1) {
+          etiquetaSeleccionada = opciones[_selectedIndex];
+        }
+
+        // Verificar si se seleccionó una etiqueta
+        if (etiquetaSeleccionada.isNotEmpty) {
+          // Actualizar las etiquetas del usuario en Firestore
+          await FirebaseFirestore.instance.collection('usuarios').doc(user.email).set({
+            'etiquetaSeleccionada': etiquetaSeleccionada, // Guardar la etiqueta seleccionada en Firestore
+          }, SetOptions(merge: true)); // Usar merge para mantener otros datos del usuario
+
+          // Imprimir la etiqueta seleccionada en la consola para verificar
+          print('Etiqueta seleccionada: $etiquetaSeleccionada');
+
+          // Navegar a la siguiente pantalla (PreguntasUsuario3 en este caso)
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PreguntasUsuario2()),
+          );
+        } else {
+          print('Error: No se seleccionó ninguna etiqueta');
+        }
+      }
+    } catch (e) {
+      print('Error al guardar la etiqueta: $e');
+      // Manejar el error aquí
+    }
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,9 +101,9 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
         title: LinearProgressIndicator(
           value: _progressValue,
           semanticsLabel: 'Linear progress indicator',
-          backgroundColor: Colors.grey[300], // Color de fondo de la barra de progreso
+          backgroundColor: Colors.grey[300],
           valueColor: AlwaysStoppedAnimation<Color>(
-            Color.fromRGBO(226, 169, 209, 1.0), // Color de la barra de progreso
+            Color.fromRGBO(226, 169, 209, 1.0),
           ),
         ),
       ),
@@ -85,7 +115,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
             SizedBox(height: 10),
             Center(
               child: Text(
-                'Que tipo de hamburguesa te gusta?',
+                '¿Qué tipo de hamburguesa te gusta?',
                 style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
@@ -111,15 +141,14 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                         borderRadius: BorderRadius.circular(10),
                       ),
                       color: _selectedIndex == index
-                          ? Color.fromRGBO(226, 169, 209, 1.0) // Utiliza el color personalizado
+                          ? Color.fromRGBO(226, 169, 209, 1.0)
                           : Colors.white,
-
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            imagenes[index], // Utiliza la ruta de imagen correspondiente
-                            height: 50, // Ajusta la altura de la imagen según sea necesario
+                            imagenes[index],
+                            height: 50,
                           ),
                           Text(
                             opciones[index],
@@ -131,7 +160,6 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                           ),
                         ],
                       ),
-
                     ),
                   );
                 },
@@ -143,10 +171,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
               child: ElevatedButton(
                 onPressed: () {
                   if (_selectedIndex != -1) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => PreguntasUsuario2()),
-                    );
+                    _guardarRespuestaEnFirebase();
                   } else {
                     showDialog(
                       context: context,
@@ -176,7 +201,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario>
                   backgroundColor: _isButtonEnabled() ? Color.fromRGBO(226, 169, 209, 1.0) : Colors.grey,
                 ),
                 child: Text(
-                  _selectedIndex != -1 ? 'Next' : 'Next',
+                  _selectedIndex != -1 ? 'Siguiente' : 'Siguiente',
                   style: TextStyle(fontSize: 20),
                 ),
               ),
