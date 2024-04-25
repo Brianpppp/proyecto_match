@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../components/firestore_funciones.dart';
 import '../components/food_cards.dart';
 import '../components/footer.dart';
@@ -79,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 }
 
-
 class PhraseAndTexts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -98,15 +99,30 @@ class PhraseAndTexts extends StatelessWidget {
             ),
           ),
         ),
-        Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height * 0.05,
-          margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
+        FutureBuilder<User?>(
+          future: _getCurrentUser(),
+          builder: (BuildContext context, AsyncSnapshot<User?> userSnapshot) {
+            if (userSnapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (userSnapshot.hasError) {
+              return Text('Error: ${userSnapshot.error}');
+            } else {
+              if (userSnapshot.hasData) {
+                return _buildUsernameWidget(context, userSnapshot.data!);
+              } else {
+                return Text(
+                  'Nombre de Usuario no disponible',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                );
+              }
+            }
+          },
         ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
       ],
     );
   }
@@ -222,4 +238,67 @@ class ImageSection extends StatelessWidget {
       },
     );
   }
+}
+
+Future<User?> _getCurrentUser() async {
+  return FirebaseAuth.instance.currentUser;
+}
+
+Widget _buildUsernameWidget(BuildContext context, User user) {
+  return FutureBuilder<DocumentSnapshot>(
+    future: FirebaseFirestore.instance.collection('usuarios').doc(user.email).get(),
+    builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return CircularProgressIndicator();
+      } else if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}');
+      } else {
+        if (snapshot.hasData && snapshot.data!.exists) {
+          var userData = snapshot.data!.data() as Map<String, dynamic>;
+          var username = userData['nombre'];
+          return Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.05,
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Text(
+                username ?? 'Nombre de Usuario no disponible',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          );
+        } else {
+          return Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height * 0.05,
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(
+              child: Text(
+                'Nombre de Usuario no disponible',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          );
+        }
+      }
+    },
+  );
 }
