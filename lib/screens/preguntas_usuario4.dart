@@ -121,22 +121,27 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
           onPressed: () {
             Navigator.pop(context);
           },
-          color: Colors.pink,
+          color: Color.fromRGBO(226, 169, 209, 1.0), // Usando el mismo color
         ),
         title: LinearProgressIndicator(
           value: _progressValue,
           semanticsLabel: 'Linear progress indicator',
+          backgroundColor: Colors.grey[300], // Color de fondo de la barra de progreso
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Color.fromRGBO(226, 169, 209, 1.0), // Color de la barra de progreso
+          ),
         ),
       ),
       body: Column(
         children: [
+          SizedBox(height: 20), // Añade espacio adicional antes del título
           Center(
             child: Container(
-              margin: EdgeInsets.only(bottom: 20.0), // Margen inferior entre el título y las etiquetas
+              margin: EdgeInsets.only(bottom: 40.0), // Margen inferior entre el título y las etiquetas
               child: Text(
                 'Cual es tu rollo?',
                 style: TextStyle(
-                  fontSize: 46,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -157,7 +162,7 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0), // Borde más circular
                     ),
-                    color: _isSelected(index) ? Colors.green : Colors.white, // Cambia el color de fondo si está seleccionado
+                    color: _isSelected(index) ? Color.fromRGBO(226, 169, 209, 1.0) : Colors.white, // Cambia el color de fondo si está seleccionado
 
                     child: Padding(
                       padding: EdgeInsets.all(12.0), // Padding reducido
@@ -174,7 +179,7 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
             ),
           ),
 
-          SizedBox(height: 20),
+          SizedBox(height: 40),
           ElevatedButton(
             onPressed: () {
               if (!_isButtonEnabled()) {
@@ -208,7 +213,7 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20), // Puedes ajustar el valor según tus necesidades
               ),
-              backgroundColor: _isButtonEnabled() ? Colors.pink : Colors.grey, // Color de fondo del botón
+              backgroundColor: _isButtonEnabled() ? Color.fromRGBO(226, 169, 209, 1.0) : Colors.grey, // Color de fondo del botón
             ),
             child: Text(
               _getButtonText(),
@@ -216,9 +221,9 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
             ),
           ),
           SizedBox(height: 20), // Espacio adicional después del botón
-
         ],
       ),
+
     );
   }
 }
