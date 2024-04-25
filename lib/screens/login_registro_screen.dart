@@ -110,6 +110,7 @@ class _AuthScreenState extends State<AuthScreen> {
         await FirebaseFirestore.instance.collection('usuarios').doc(_emailController.text).set({
           'nombre': _usernameController.text, // Guarda el nombre de usuario en Firestore
           'mail': _emailController.text,
+          'puntos': 150, // Agrega 150 puntos al registrarse
         });
 
         // Mostrar mensaje de éxito

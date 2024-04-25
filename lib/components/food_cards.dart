@@ -19,9 +19,9 @@ class FoodCard extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final double cardWidth = screenWidth * 0.84;
+    final double cardWidth = screenWidth * 0.4;
     final double cardHeight = screenHeight * 0.35;
-    final double horizontalPadding = screenWidth * 0.05;
+    final double horizontalPadding = screenWidth * 0.12;
     final double verticalPadding = screenHeight * 0.01;
     final double nameFontSize = screenWidth * 0.06;
     final double priceFontSize = screenWidth * 0.04;
