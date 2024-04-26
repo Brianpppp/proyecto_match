@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'preguntas_usuario3.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PreguntasUsuario2 extends StatefulWidget {
   PreguntasUsuario2();
@@ -12,15 +14,15 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
     with TickerProviderStateMixin {
   int _selectedIndex = -1;
   final List<String> opciones = [
-    'TOMATE',
-    'PEPINILLOS',
-    'QUESO',
-    'BACON',
-    'HUEVO',
-    'LECHUGA',
-    'CEBOLLA',
-    'SALSA',
-    'NO LO TENGO CLARO',
+    'Tomate',
+    'Pepinillos',
+    'Queso',
+    'Bacon',
+    'Huevo',
+    'Lechuga',
+    'Cebolla',
+    'Salsa',
+    'No lo tengo claro',
   ];
 
   // Lista de rutas de imágenes correspondientes a cada opción
@@ -68,6 +70,43 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
 
   bool _isButtonEnabled() {
     return _selectedIndex != -1;
+  }
+
+  void _guardarRespuestaEnFirebase() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        // Obtener la etiqueta seleccionada por el usuario
+        String etiquetaSeleccionada = '';
+
+        // Agregar la etiqueta seleccionada si existe
+        if (_selectedIndex != -1) {
+          etiquetaSeleccionada = opciones[_selectedIndex];
+        }
+
+        // Verificar si se seleccionó una etiqueta
+        if (etiquetaSeleccionada.isNotEmpty) {
+          // Actualizar las etiquetas del usuario en Firestore
+          await FirebaseFirestore.instance.collection('usuarios').doc(user.email).set({
+            'etiquetaSeleccionada2': etiquetaSeleccionada, // Guardar la etiqueta seleccionada en Firestore
+          }, SetOptions(merge: true)); // Usar merge para mantener otros datos del usuario
+
+          // Imprimir la etiqueta seleccionada en la consola para verificar
+          print('Etiqueta seleccionada: $etiquetaSeleccionada');
+
+          // Navegar a la siguiente pantalla (PreguntasUsuario3 en este caso)
+          Navigator.pushReplacement( // Reemplaza la pantalla actual en lugar de agregar una nueva
+            context,
+            MaterialPageRoute(builder: (context) => PreguntasUsuario3()),
+          );
+        } else {
+          print('Error: No se seleccionó ninguna etiqueta');
+        }
+      }
+    } catch (e) {
+      print('Error al guardar la etiqueta: $e');
+      // Manejar el error aquí
+    }
   }
 
   @override
@@ -158,6 +197,7 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
               child: ElevatedButton(
                 onPressed: () {
                   if (_selectedIndex != -1) {
+                    _guardarRespuestaEnFirebase();
                     Navigator.push(
                       context,
                       MaterialPageRoute(

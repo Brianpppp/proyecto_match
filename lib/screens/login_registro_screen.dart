@@ -378,6 +378,7 @@ class UserInfo extends StatelessWidget {
         return ListTile(
           title: Text('${userData['nombre']} ${userData['Apellido']}'),
           subtitle: Text(userData['mail']),
+
         );
       },
     );

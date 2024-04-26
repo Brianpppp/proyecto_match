@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'preguntas_usuario4.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PreguntasUsuario3 extends StatefulWidget {
   PreguntasUsuario3();
@@ -70,6 +71,46 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
   bool _isButtonEnabled() {
     return _selectedIndexes.where((index) => index != -1).length == 4;
   }
+
+  void _guardarRespuestasEnFirebase() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        List<String> etiquetasSeleccionadas = [];
+
+        // Recorrer todas las listas de opciones y obtener las etiquetas seleccionadas
+        for (int i = 0; i < _selectedIndexes.length; i++) {
+          // Obtener la etiqueta seleccionada para la lista actual
+          int selectedIndex = _selectedIndexes[i];
+          String etiquetaSeleccionada = selectedIndex != -1 ? opciones[i][selectedIndex] : '';
+          etiquetasSeleccionadas.add(etiquetaSeleccionada);
+        }
+
+        // Verificar si se seleccionaron todas las etiquetas
+        if (etiquetasSeleccionadas.every((etiqueta) => etiqueta.isNotEmpty)) {
+          // Actualizar las etiquetas del usuario en Firestore
+          await FirebaseFirestore.instance.collection('usuarios').doc(user.email).set({
+            'etiquetas': etiquetasSeleccionadas, // Guardar las etiquetas seleccionadas en Firestore
+          }, SetOptions(merge: true)); // Usar merge para mantener otros datos del usuario
+
+          // Imprimir las etiquetas seleccionadas en la consola para verificar
+          print('Etiquetas seleccionadas: $etiquetasSeleccionadas');
+
+          // Navegar a la siguiente pantalla (PreguntasUsuario4 en este caso)
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PreguntasUsuario4()),
+          );
+        } else {
+          print('Error: No se seleccionaron todas las etiquetas');
+        }
+      }
+    } catch (e) {
+      print('Error al guardar las etiquetas: $e');
+      // Manejar el error aquí
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +213,7 @@ class _PreguntasUsuario3State extends State<PreguntasUsuario3>
             ElevatedButton(
               onPressed: _isButtonEnabled()
                   ? () {
+                _guardarRespuestasEnFirebase();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => PreguntasUsuario4()),
