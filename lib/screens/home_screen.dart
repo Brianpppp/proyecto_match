@@ -234,6 +234,7 @@ class ImageSection extends StatelessWidget {
           precio: foodList[index]['precio'].toDouble(),
           descripcion: foodList[index]['descripcion'],
           url: foodList[index]['url'],
+          etiquetaSeleccionada: foodList[index]['etiquetaSeleccionada'],
         );
       },
     );

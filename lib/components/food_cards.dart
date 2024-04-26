@@ -5,13 +5,15 @@ class FoodCard extends StatelessWidget {
   final double precio;
   final String descripcion;
   final String url;
+  final String etiquetaSeleccionada;
 
   const FoodCard({
     Key? key,
     required this.nombre,
     required this.precio,
     required this.descripcion,
-    required this.url
+    required this.url,
+    required this.etiquetaSeleccionada,
   }) : super(key: key);
 
   @override
@@ -34,6 +36,7 @@ class FoodCard extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30.0),
+        color: Colors.red, // Color de fondo rojo
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -59,7 +62,7 @@ class FoodCard extends StatelessWidget {
                       nombre,
                       style: TextStyle(fontSize: nameFontSize),
                     ),
-                    SizedBox(height: verticalPadding),
+                    SizedBox(height: verticalPadding / 2),
                     Text(
                       'Precio: \$${precio.toStringAsFixed(2)}',
                       style: TextStyle(fontSize: priceFontSize),
@@ -67,7 +70,7 @@ class FoodCard extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: verticalPadding),
+              SizedBox(height: verticalPadding / 2),
               Align(
                 alignment: Alignment.center,
                 child: Image.network(
@@ -77,7 +80,7 @@ class FoodCard extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(height: verticalPadding),
+              SizedBox(height: verticalPadding / 2),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                 child: Text(
@@ -85,6 +88,17 @@ class FoodCard extends StatelessWidget {
                   style: TextStyle(fontSize: descriptionFontSize),
                 ),
               ),
+              SizedBox(height: verticalPadding / 2),
+              Center(
+                child: Text(
+                  etiquetaSeleccionada,
+                  style: TextStyle(
+                    fontSize: priceFontSize,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              SizedBox(height: verticalPadding),
             ],
           ),
         ),
