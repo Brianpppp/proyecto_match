@@ -122,7 +122,7 @@ class PhraseAndTexts extends StatelessWidget {
             }
           },
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
       ],
     );
   }
@@ -280,7 +280,7 @@ Widget _buildUsernameWidget(BuildContext context, User user) {
           return Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.05,
-            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.2),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
