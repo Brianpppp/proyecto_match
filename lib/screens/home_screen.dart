@@ -122,7 +122,7 @@ class PhraseAndTexts extends StatelessWidget {
             }
           },
         ),
-        SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
       ],
     );
   }
@@ -256,31 +256,62 @@ Widget _buildUsernameWidget(BuildContext context, User user) {
         if (snapshot.hasData && snapshot.data!.exists) {
           var userData = snapshot.data!.data() as Map<String, dynamic>;
           var username = userData['nombre'];
+          var puntos = userData['puntos'] ?? 0;
+          var maxPuntos = 100; // Aquí puedes establecer el máximo de puntos posible
+          var progress = puntos / maxPuntos;
+
           return Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.05,
-            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
+              color: Colors.white, // Color de fondo blanco
+              borderRadius: BorderRadius.circular(10), // Bordes redondeados del contenedor
             ),
-            child: Center(
-              child: Text(
-                username ?? 'Nombre de Usuario no disponible',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      username ?? 'Nombre de Usuario no disponible',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.06,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.09, // Tamaño del gráfico circular (alto)
+                          width: MediaQuery.of(context).size.width * 0.09, // Tamaño del gráfico circular (ancho)
+                          child: CircularProgressIndicator(
+                            value: progress,
+                            strokeWidth: MediaQuery.of(context).size.width * 0.012, // Grosor del círculo
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.red), // Cambia el color a rojo
+                            backgroundColor: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          '$puntos',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
+              ],
             ),
           );
         } else {
           return Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.05,
-            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1),
+            margin: EdgeInsets.symmetric(horizontal: 20),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(10),
