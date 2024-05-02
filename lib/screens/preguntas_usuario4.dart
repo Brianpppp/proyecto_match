@@ -193,95 +193,98 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
           onPressed: () {
             Navigator.pop(context);
           },
-          color: Color.fromRGBO(226, 169, 209, 1.0), // Usando el mismo color
+          color: Color.fromRGBO(226, 169, 209, 1.0),
         ),
         title: LinearProgressIndicator(
           value: _progressValue,
           semanticsLabel: 'Linear progress indicator',
-          backgroundColor: Colors.grey[300], // Color de fondo de la barra de progreso
+          backgroundColor: Colors.grey[300],
           valueColor: AlwaysStoppedAnimation<Color>(
-            Color.fromRGBO(226, 169, 209, 1.0), // Color de la barra de progreso
+            Color.fromRGBO(226, 169, 209, 1.0),
           ),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(height: 20), // Añade espacio adicional antes del título
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(
-                  bottom: 40.0), // Margen inferior entre el título y las etiquetas
-              child: Text(
-                'Cual es tu rollo?',
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            Center(
+              child: Container(
+                margin: EdgeInsets.only(bottom: 40.0),
+                child: Text(
+                  'Cual es tu rollo?',
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: Wrap(
-              spacing: 0.0, // Elimina el espacio horizontal entre elementos
-              runSpacing: 0.0, // Elimina el espacio vertical entre elementos
-              children: List.generate(opciones.length, (index) {
-                String opcion = opciones[index];
-                return GestureDetector(
-                  onTap: () {
-                    _toggleSelection(index);
-                  },
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      // Borde más circular
-                    ),
-                    color: _isSelected(index)
-                        ? Color.fromRGBO(226, 169, 209, 1.0)
-                        : Colors.white, // Cambia el color de fondo si está seleccionado
+            Expanded(
+              child: Wrap(
+                spacing: 0.0,
+                runSpacing: 0.0,
+                children: List.generate(opciones.length, (index) {
+                  String opcion = opciones[index];
+                  return GestureDetector(
+                    onTap: () {
+                      _toggleSelection(index);
+                    },
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      color: _isSelected(index)
+                          ? Color.fromRGBO(226, 169, 209, 1.0)
+                          : Colors.white,
 
-                    child: Padding(
-                      padding: EdgeInsets.all(12.0), // Padding reducido
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(opcion),
-                        ],
+                      child: Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(opcion),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-          SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () {
-              if (!_isButtonEnabled()) {
-                _guardarRespuestasEnFirebase(true, context); // Pasar el contexto y requerir exactamente cinco opciones
-              } else {
-                _guardarRespuestasEnFirebase(false, context); // Pasar el contexto y no requerir exactamente cinco opciones
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 16),
-              minimumSize: Size(double.infinity, 50),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    20), // Puedes ajustar el valor según tus necesidades
+                  );
+                }).toList(),
               ),
-              backgroundColor: _isButtonEnabled()
-                  ? Color.fromRGBO(226, 169, 209, 1.0)
-                  : Colors.grey, // Color de fondo del botón
             ),
-            child: Text(
-              _getButtonText(),
-              style: TextStyle(
-                  fontSize: 20, color: Colors.white), // Estilo de texto del botón
+            SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () {
+                if (!_isButtonEnabled()) {
+                  _guardarRespuestasEnFirebase(true, context);
+                } else {
+                  _guardarRespuestasEnFirebase(false, context);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                backgroundColor: _isButtonEnabled()
+                    ? Color.fromRGBO(226, 169, 209, 1.0)
+                    : Colors.grey,
+              ),
+              child: Text(
+                _getButtonText(),
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
             ),
-          ),
-          SizedBox(height: 20), // Espacio adicional después del botón
-        ],
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
+
 }

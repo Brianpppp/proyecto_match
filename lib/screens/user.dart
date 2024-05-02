@@ -72,7 +72,7 @@ class UserPage extends StatelessWidget {
                       ),
                       onTap: () {
                         // Realizar la acción de cerrar sesión al hacer clic
-                        FirebaseAuth.instance.signOut();
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => PreguntasUsuario()),

@@ -51,7 +51,9 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario> with SingleTickerPr
 
   void _guardarRespuestaEnFirebase() async {
     try {
+      print('DENTRO');
       User? user = FirebaseAuth.instance.currentUser;
+      print(user);
       if (user != null) {
         // Obtener la etiqueta seleccionada por el usuario
         String etiquetaSeleccionada = '';
@@ -85,10 +87,6 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario> with SingleTickerPr
       // Manejar el error aquí
     }
   }
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
