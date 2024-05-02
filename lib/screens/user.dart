@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todolist_firebase/screens/login_registro_screen.dart';
 import '../components/header.dart';
 import '../components/footer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'preguntas_usuario.dart'; // Importa la página de preguntas del usuario
 
 class UserPage extends StatelessWidget {
   @override
@@ -52,9 +55,31 @@ class UserPage extends StatelessWidget {
                       ),
                       onTap: () {
                         // Realizar la acción de cerrar sesión al hacer clic
-                        _signOut(context);
+                        FirebaseAuth.instance.signOut();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => AuthScreen()),
+                        );
                       },
                     ),
+
+                    Divider(),
+                    ListTile(
+                      leading: Icon(Icons.question_answer),
+                      title: Text(
+                        'Responder Preguntas',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      onTap: () {
+                        // Realizar la acción de cerrar sesión al hacer clic
+                        FirebaseAuth.instance.signOut();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => PreguntasUsuario()),
+                        );
+                      },  //OnTap
+                    ),
+                    Divider(),
                   ],
                 ),
               ),
@@ -63,12 +88,5 @@ class UserPage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  // Función para cerrar sesión
-  void _signOut(BuildContext context) async {
-    // Aquí deberías realizar las operaciones necesarias para cerrar sesión, como cerrar la sesión en Firebase Auth, etc.
-    // Después de cerrar sesión, puedes navegar a la pantalla de inicio de sesión o a cualquier otra pantalla necesaria.
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 }

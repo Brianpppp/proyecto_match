@@ -88,7 +88,7 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
         if (etiquetaSeleccionada.isNotEmpty) {
           // Actualizar las etiquetas del usuario en Firestore
           await FirebaseFirestore.instance.collection('usuarios').doc(user.email).set({
-            'etiquetaSeleccionada2': etiquetaSeleccionada, // Guardar la etiqueta seleccionada en Firestore
+            'etiqueta2': etiquetaSeleccionada, // Guardar la etiqueta seleccionada en Firestore
           }, SetOptions(merge: true)); // Usar merge para mantener otros datos del usuario
 
           // Imprimir la etiqueta seleccionada en la consola para verificar

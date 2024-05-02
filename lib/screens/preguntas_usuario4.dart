@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
-import 'preguntas_usuario3.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -125,14 +124,14 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
 
           // Verificar si la etiqueta ya existe en Firestore
           final etiquetaDoc = await FirebaseFirestore.instance
-              .collection('etiquetas2')
+              .collection('etiqueta4')
               .doc(etiquetaSeleccionada)
               .get();
 
           if (!etiquetaDoc.exists) {
             // La etiqueta no existe, así que la agregamos a Firestore
             await FirebaseFirestore.instance
-                .collection('etiquetas2')
+                .collection('etiqueta4')
                 .doc(etiquetaSeleccionada)
                 .set({ 'nombre': etiquetaSeleccionada });
           }
@@ -147,7 +146,7 @@ class _PreguntasUsuario4State extends State<PreguntasUsuario4>
               .collection('usuarios')
               .doc(user.email)
               .set({
-            'etiquetas2': etiquetasSeleccionadas,
+            'etiqueta4': etiquetasSeleccionadas,
           }, SetOptions(merge: true));
 
           // Navegar a la siguiente pantalla (HomeScreen)

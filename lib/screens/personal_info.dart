@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../components/header.dart';
 import '../components/footer.dart';
-import 'login_registro_screen.dart';
 
 class info extends StatelessWidget {
   @override
@@ -121,22 +120,7 @@ class info extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        FirebaseAuth.instance.signOut();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => AuthScreen()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      ),
-                      child: Text(
-                        'Cerrar sesión',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
+
                   ],
                 ),
               ),
