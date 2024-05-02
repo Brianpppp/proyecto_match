@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class FoodCard extends StatelessWidget {
   final String nombre;
   final double precio;
+  final String apodo;
   final String descripcion;
   final String url;
   final String etiquetaSeleccionada;
+  final List<String> etiqueta;
 
   const FoodCard({
     Key? key,
@@ -14,6 +16,8 @@ class FoodCard extends StatelessWidget {
     required this.descripcion,
     required this.url,
     required this.etiquetaSeleccionada,
+    required this.apodo,
+    required this.etiqueta,
   }) : super(key: key);
 
   @override
@@ -23,11 +27,10 @@ class FoodCard extends StatelessWidget {
 
     final double cardWidth = screenWidth * 0.4;
     final double cardHeight = screenHeight * 0.35;
-    final double horizontalPadding = screenWidth * 0.12;
+    final double horizontalPadding = screenWidth * 0.06;
     final double verticalPadding = screenHeight * 0.01;
-    final double nameFontSize = screenWidth * 0.06;
+    final double nameFontSize = screenWidth * 0.05; // Reduje el tamaño de la fuente del nombre
     final double priceFontSize = screenWidth * 0.04;
-    final double descriptionFontSize = screenWidth * 0.04;
 
     return Container(
       margin: EdgeInsets.symmetric(
@@ -59,46 +62,52 @@ class FoodCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
+                      apodo,
+                      style: TextStyle(fontSize: nameFontSize),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: verticalPadding / 2),
+                    Text(
                       nombre,
                       style: TextStyle(fontSize: nameFontSize),
                     ),
                     SizedBox(height: verticalPadding / 2),
-                    Text(
-                      'Precio: \$${precio.toStringAsFixed(2)}',
-                      style: TextStyle(fontSize: priceFontSize),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Image.network(
+                        url,
+                        width: cardWidth * 0.7,
+                        height: cardHeight * 0.4,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    SizedBox(height: verticalPadding / 2),
+                    Container(
+                      width: double.infinity,
+                      child: Wrap(
+                        spacing: 8.0,
+                        runSpacing: 8.0,
+                        children: etiqueta.map((tag) {
+                          return Container(
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Text(
+                              tag,
+                              style: TextStyle(
+                                fontSize: priceFontSize,
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: verticalPadding / 2),
-              Align(
-                alignment: Alignment.center,
-                child: Image.network(
-                  url,
-                  width: cardWidth * 0.7,
-                  height: cardHeight * 0.4,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              SizedBox(height: verticalPadding / 2),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: Text(
-                  descripcion,
-                  style: TextStyle(fontSize: descriptionFontSize),
-                ),
-              ),
-              SizedBox(height: verticalPadding / 2),
-              Center(
-                child: Text(
-                  etiquetaSeleccionada,
-                  style: TextStyle(
-                    fontSize: priceFontSize,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              SizedBox(height: verticalPadding),
             ],
           ),
         ),

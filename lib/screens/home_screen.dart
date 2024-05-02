@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../components/firestore_funciones.dart';
-import '../components/food_cards.dart';
+import '../components/food_cards.dart'; // Importar el componente FoodCard
 import '../components/footer.dart';
 import '../components/header.dart';
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   List<Map<String, dynamic>> bebidas = [];
   List<Map<String, dynamic>> snacks = [];
   List<Map<String, dynamic>> postres = [];
+  String selectedLabel = '';
 
   @override
   void initState() {
@@ -33,7 +35,25 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     bebidas = await FirestoreService.getCollection('bebida');
     snacks = await FirestoreService.getCollection('snack');
     postres = await FirestoreService.getCollection('postre');
+
+    User? user = await _getCurrentUser();
+    if (user != null) {
+      selectedLabel = await _getUserSelectedLabel(user);
+    }
     setState(() {});
+  }
+
+  Future<String> _getUserSelectedLabel(User user) async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('usuarios').doc(user.email).get();
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        return data['etiquetaSeleccionada'] ?? '';
+      }
+    } catch (e) {
+      print('Error getting user selected label: $e');
+    }
+    return '';
   }
 
   @override
@@ -67,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               postres: postres,
               tabController: _tabController,
               pageController: _pageController,
+              selectedLabel: selectedLabel,
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -181,11 +202,24 @@ class TabSection extends StatelessWidget {
   final List<Map<String, dynamic>> postres;
   final TabController tabController;
   final PageController pageController;
+  final String selectedLabel;
 
-  const TabSection({Key? key, required this.hamburguesas, required this.bebidas, required this.snacks, required this.postres, required this.tabController, required this.pageController}) : super(key: key);
+  const TabSection({
+    Key? key,
+    required this.hamburguesas,
+    required this.bebidas,
+    required this.snacks,
+    required this.postres,
+    required this.tabController,
+    required this.pageController,
+    required this.selectedLabel,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> sortedHamburguesas = hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] == selectedLabel).toList();
+    List<Map<String, dynamic>> remainingHamburguesas = hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] != selectedLabel).toList();
+
     return Column(
       children: [
         TabBar(
@@ -204,7 +238,7 @@ class TabSection extends StatelessWidget {
           child: TabBarView(
             controller: tabController,
             children: [
-              ImageSection(foodList: hamburguesas, pageController: pageController),
+              ImageSection(foodList: sortedHamburguesas + remainingHamburguesas, pageController: pageController),
               ImageSection(foodList: bebidas, pageController: pageController),
               ImageSection(foodList: snacks, pageController: pageController),
               ImageSection(foodList: postres, pageController: pageController),
@@ -215,6 +249,7 @@ class TabSection extends StatelessWidget {
     );
   }
 }
+
 
 class ImageSection extends StatelessWidget {
   final List<Map<String, dynamic>> foodList;
@@ -229,17 +264,23 @@ class ImageSection extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       itemCount: foodList.length,
       itemBuilder: (context, index) {
+        // Convertir la lista dinámica a una lista de cadenas
+        List<String> etiquetas = List<String>.from(foodList[index]['etiqueta']);
+
         return FoodCard(
           nombre: foodList[index]['nombre'],
           precio: foodList[index]['precio'].toDouble(),
           descripcion: foodList[index]['descripcion'],
           url: foodList[index]['url'],
           etiquetaSeleccionada: foodList[index]['etiquetaSeleccionada'],
+          apodo: foodList[index]['apodo'],
+          etiqueta: etiquetas, // Pasar la lista de etiquetas
         );
       },
     );
   }
 }
+
 
 Future<User?> _getCurrentUser() async {
   return FirebaseAuth.instance.currentUser;
@@ -334,4 +375,3 @@ Widget _buildUsernameWidget(BuildContext context, User user) {
     },
   );
 }
-

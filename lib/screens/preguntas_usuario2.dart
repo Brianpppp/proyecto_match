@@ -92,7 +92,7 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
           }, SetOptions(merge: true)); // Usar merge para mantener otros datos del usuario
 
           // Imprimir la etiqueta seleccionada en la consola para verificar
-          print('Etiqueta seleccionada: $etiquetaSeleccionada');
+          print('Etiqueta seleccionada2: $etiquetaSeleccionada');
 
           // Navegar a la siguiente pantalla (PreguntasUsuario3 en este caso)
           Navigator.pushReplacement( // Reemplaza la pantalla actual en lugar de agregar una nueva

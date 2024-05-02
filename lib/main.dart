@@ -50,3 +50,61 @@ class MyApp extends StatelessWidget {
     );
   }
 }*/
+
+
+/*class ImageSection extends StatelessWidget {
+  final List<Map<String, dynamic>> foodList;
+  final PageController pageController;
+  final String etiquetaSeleccionada;
+
+  const ImageSection({
+    Key? key,
+    required this.foodList,
+    required this.pageController,
+    required this.etiquetaSeleccionada,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Map<String, dynamic>> filteredFoodList = [];
+    final List<Map<String, dynamic>> otherFoodList = [];
+
+    // Separar los alimentos que coinciden con la etiqueta seleccionada de los que no coinciden
+    for (final food in foodList) {
+      if (food['etiquetaSeleccionada'] == etiquetaSeleccionada) {
+        filteredFoodList.add(food);
+      } else {
+        otherFoodList.add(food);
+      }
+    }
+
+    return PageView.builder(
+      controller: pageController,
+      scrollDirection: Axis.horizontal,
+      itemCount: filteredFoodList.length + otherFoodList.length,
+      itemBuilder: (context, index) {
+        if (index < filteredFoodList.length) {
+          // Mostrar alimentos que coinciden con la etiqueta seleccionada
+          return FoodCard(
+            nombre: filteredFoodList[index]['nombre'],
+            precio: filteredFoodList[index]['precio'].toDouble(),
+            descripcion: filteredFoodList[index]['descripcion'],
+            url: filteredFoodList[index]['url'],
+            etiquetaSeleccionada: filteredFoodList[index]['etiquetaSeleccionada'],
+          );
+        } else {
+          // Mostrar otros alimentos
+          final otherIndex = index - filteredFoodList.length;
+          return FoodCard(
+            nombre: otherFoodList[otherIndex]['nombre'],
+            precio: otherFoodList[otherIndex]['precio'].toDouble(),
+            descripcion: otherFoodList[otherIndex]['descripcion'],
+            url: otherFoodList[otherIndex]['url'],
+            etiquetaSeleccionada: otherFoodList[otherIndex]['etiquetaSeleccionada'],
+          );
+        }
+      },
+    );
+  }
+}
+*/

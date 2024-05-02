@@ -87,10 +87,6 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario> with SingleTickerPr
     }
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
