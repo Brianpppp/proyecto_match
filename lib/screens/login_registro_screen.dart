@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Importa Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todolist_firebase/screens/home_screen.dart';
 import '../firebase_options.dart';
-import 'preguntas_usuario.dart'; // Importa la página de preguntas del usuario
+import 'preguntas_usuario.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.pink,
         colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: Colors.pink,
-          background: Color.fromRGBO(255, 169, 209, 1.0), // Establece el color de fondo de la aplicación
+          background: Color.fromRGBO(255, 169, 209, 1.0),
         ),
       ),
       home: AuthScreen(),
@@ -41,7 +42,7 @@ class _AuthScreenState extends State<AuthScreen> {
   bool _isLogin = true;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _usernameController = TextEditingController(); // Nuevo controlador para el nombre de usuario
+  final _usernameController = TextEditingController();
 
   Future<void> _authenticate(BuildContext context) async {
     setState(() {
@@ -67,36 +68,75 @@ class _AuthScreenState extends State<AuthScreen> {
         email: _emailController.text,
         password: _passwordController.text,
       );
+
       if (userCredential.user != null) {
+        final formularioCompletado = await _isFormularioCompletado(_emailController.text);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Container(
-              alignment: Alignment.center, // Centra el contenido del SnackBar
+              alignment: Alignment.center,
               child: Padding(
-                padding: EdgeInsets.only(top: 0.0), // Ajusta el margen superior del contenido
+                padding: EdgeInsets.only(top: 0.0),
                 child: Text(
                   'Log in successful!',
-                  style: TextStyle(fontSize: 18.0), // Aumenta el tamaño de la letra
+                  style: TextStyle(fontSize: 18.0),
                 ),
               ),
             ),
             duration: Duration(seconds: 2),
-            behavior: SnackBarBehavior.floating, // Cambia el comportamiento del SnackBar a flotante
-            shape: RoundedRectangleBorder( // Cambia la forma del SnackBar
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(100.0),
             ),
-            margin: EdgeInsets.only(bottom: 120.0, left: 40.0, right: 40.0), // Ajusta el margen del SnackBar para cambiar su posición
+            margin: EdgeInsets.only(bottom: 120.0, left: 40.0, right: 40.0),
           ),
         );
-        // Navegar a la pantalla PreguntasUsuario
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => PreguntasUsuario(email: _emailController.text)),
-        );
+
+        if (formularioCompletado) {
+          await FirebaseFirestore.instance.collection('usuarios').doc(_emailController.text).update({
+            'formulario_completado': true,
+          });
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()), // Cambia PreguntasUsuario() por la página Home
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => PreguntasUsuario()),
+          );
+        }
       }
     } on FirebaseAuthException catch (error) {
       _showErrorDialog(error.message ?? 'An error occurred');
     }
+  }
+
+
+
+  Future<bool> _isFormularioCompletado(String userEmail) async {
+    final etiquetas = ['etiqueta1', 'etiqueta2', 'etiqueta3', 'etiqueta4'];
+    final userDoc = await FirebaseFirestore.instance.collection('usuarios').doc(userEmail).get();
+
+    if (!userDoc.exists) {
+      print('El usuario no existe');
+      return false; // El usuario no existe
+    }
+
+    final userData = userDoc.data() as Map<String, dynamic>;
+
+    // Verificar que todas las etiquetas estén presentes
+    for (final etiqueta in etiquetas) {
+      if (!userData.containsKey(etiqueta)) {
+        print('Falta la etiqueta $etiqueta');
+        return false; // Si falta alguna etiqueta, el formulario no está completo
+      }
+    }
+
+    print('Todas las etiquetas están presentes, el formulario está completo');
+    return true; // Todas las etiquetas están presentes, el formulario está completo
   }
 
   Future<void> _signUpWithEmail() async {
@@ -106,14 +146,13 @@ class _AuthScreenState extends State<AuthScreen> {
         password: _passwordController.text,
       );
       if (userCredential.user != null) {
-        // Guardar el nombre de usuario en Firestore
         await FirebaseFirestore.instance.collection('usuarios').doc(_emailController.text).set({
-          'nombre': _usernameController.text, // Guarda el nombre de usuario en Firestore
+          'nombre': _usernameController.text,
           'mail': _emailController.text,
-          'puntos': 150, // Agrega 150 puntos al registrarse
+          'puntos': 150,
+          'formulario_completado': false, // Cambiado a false
         });
 
-        // Mostrar mensaje de éxito
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Registration successful!'),
@@ -121,7 +160,6 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
         );
 
-        // Navegar al apartado de login después de un breve retraso
         Future.delayed(Duration(seconds: 2), () {
           setState(() {
             _isLogin = true;
@@ -168,7 +206,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(255, 169, 209, 1.0), // Color de fondo rosa
+      backgroundColor: Color.fromRGBO(255, 169, 209, 1.0),
 
       body: Center(
         child: SingleChildScrollView(
@@ -177,7 +215,7 @@ class _AuthScreenState extends State<AuthScreen> {
             children: [
               Container(
                 color: Color.fromRGBO(255, 169, 209, 1.0),
-                height: 100, // Ajusta según tus necesidades
+                height: 100,
                 width: 200,
                 child: Image.asset(
                   'assets/match2.png',
@@ -186,7 +224,7 @@ class _AuthScreenState extends State<AuthScreen> {
               ),
               SizedBox(height: 60),
               SizedBox(
-                width: 350, // Anchura deseada para la tarjeta
+                width: 350,
                 child: Card(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
@@ -246,15 +284,14 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                         SizedBox(height: 20),
                         Padding(
-                          padding: EdgeInsets.only(bottom: 25), // Solo altura en la parte inferior
+                          padding: EdgeInsets.only(bottom: 25),
                           child: Text(
                             _isLogin ? 'Welcome to MATCH!' : 'Welcome to MATCH!',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold), // Texto en negrita
+                            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
                         SizedBox(height: 1),
-                        // Campo de texto para el nombre de usuario
                         if (!_isLogin)
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10),
@@ -305,10 +342,10 @@ class _AuthScreenState extends State<AuthScreen> {
                           onPressed: () => _authenticate(context),
                           style: ElevatedButton.styleFrom(
                             textStyle: TextStyle(fontSize: 18),
-                            primary: Color.fromRGBO(226, 50, 42, 1), // Color de fondo
-                            minimumSize: Size(double.infinity, 50), // Ancho y alto del botón
+                            primary: Color.fromRGBO(226, 50, 42, 1),
+                            minimumSize: Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40), // Radio del borde
+                              borderRadius: BorderRadius.circular(40),
                             ),
                           ),
                           child: Container(
@@ -343,7 +380,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _usernameController.dispose(); // Dispose del controlador de nombre de usuario
+    _usernameController.dispose();
     super.dispose();
   }
 }
@@ -358,7 +395,7 @@ class UserInfo extends StatelessWidget {
     return FutureBuilder<DocumentSnapshot>(
       future: FirebaseFirestore.instance
           .collection('usuarios')
-          .doc(email) // Asumiendo que el documento tiene el mismo ID que el correo electrónico
+          .doc(email)
           .get(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {

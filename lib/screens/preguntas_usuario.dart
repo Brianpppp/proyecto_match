@@ -4,9 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'preguntas_usuario2.dart';
 
 class PreguntasUsuario extends StatefulWidget {
-  final String email;
 
-  PreguntasUsuario({required this.email});
+  PreguntasUsuario();
 
   @override
   _PreguntasUsuarioState createState() => _PreguntasUsuarioState();
@@ -52,7 +51,9 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario> with SingleTickerPr
 
   void _guardarRespuestaEnFirebase() async {
     try {
+      print('DENTRO');
       User? user = FirebaseAuth.instance.currentUser;
+      print(user);
       if (user != null) {
         // Obtener la etiqueta seleccionada por el usuario
         String etiquetaSeleccionada = '';
@@ -66,7 +67,7 @@ class _PreguntasUsuarioState extends State<PreguntasUsuario> with SingleTickerPr
         if (etiquetaSeleccionada.isNotEmpty) {
           // Actualizar las etiquetas del usuario en Firestore
           await FirebaseFirestore.instance.collection('usuarios').doc(user.email).set({
-            'etiquetaSeleccionada': etiquetaSeleccionada, // Guardar la etiqueta seleccionada en Firestore
+            'etiqueta1': etiquetaSeleccionada, // Guardar la etiqueta seleccionada en Firestore
           }, SetOptions(merge: true)); // Usar merge para mantener otros datos del usuario
 
           // Imprimir la etiqueta seleccionada en la consola para verificar
