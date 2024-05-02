@@ -94,6 +94,10 @@ class _AuthScreenState extends State<AuthScreen> {
         );
 
         if (formularioCompletado) {
+          await FirebaseFirestore.instance.collection('usuarios').doc(_emailController.text).update({
+            'formulario_completado': true,
+          });
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()), // Cambia PreguntasUsuario() por la página Home
@@ -109,6 +113,7 @@ class _AuthScreenState extends State<AuthScreen> {
       _showErrorDialog(error.message ?? 'An error occurred');
     }
   }
+
 
 
   Future<bool> _isFormularioCompletado(String userEmail) async {
