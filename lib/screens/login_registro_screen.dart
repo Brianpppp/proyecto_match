@@ -150,7 +150,7 @@ class _AuthScreenState extends State<AuthScreen> {
           'nombre': _usernameController.text,
           'mail': _emailController.text,
           'puntos': 150,
-          'formulario_completado': false, // Cambiado a false
+          'formulario_completado': false,
         });
 
         ScaffoldMessenger.of(context).showSnackBar(

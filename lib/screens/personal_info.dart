@@ -4,123 +4,38 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../components/header.dart';
 import '../components/footer.dart';
 
-class info extends StatelessWidget {
+class Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Footer(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: Stack(
         children: [
-          Header(),
-          Expanded(
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Header(),
+          ),
+          Positioned.fill(
+            top: MediaQuery.of(context).padding.top + 60, // Ajusta la posición superior según tus necesidades
             child: Container(
               color: Color.fromRGBO(255, 169, 209, 1.0),
               child: Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    SizedBox(height: 20),
                     CircleAvatar(
                       radius: 50,
                       backgroundColor: Colors.white,
                       // Puedes agregar la imagen de perfil aquí
                       // backgroundImage: AssetImage('assets/user_profile_image.jpg'),
                     ),
-                    FutureBuilder<User?>(
-                      future: _getCurrentUser(),
-                      builder: (BuildContext context, AsyncSnapshot<User?> userSnapshot) {
-                        if (userSnapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        }
-                        if (userSnapshot.hasError) {
-                          return Text('Error: ${userSnapshot.error}');
-                        }
-                        if (userSnapshot.hasData) {
-                          return FutureBuilder<DocumentSnapshot>(
-                            future: FirebaseFirestore.instance.collection('usuarios').doc(userSnapshot.data!.email).get(),
-                            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                              if (snapshot.connectionState == ConnectionState.waiting) {
-                                return CircularProgressIndicator();
-                              }
-                              if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              }
-                              if (snapshot.hasData && snapshot.data!.exists) {
-                                var userData = snapshot.data!.data() as Map<String, dynamic>;
-                                var username = userData['nombre'];
-                                return Text(
-                                  username ?? 'Nombre de Usuario no disponible',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                );
-                              } else {
-                                return Text(
-                                  'Nombre de Usuario no disponible',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                );
-                              }
-                            },
-                          );
-                        } else {
-                          return Text(
-                            'Nombre de Usuario no disponible',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    SizedBox(height: 10),
-                    FutureBuilder<String>(
-                      future: _getCurrentUserEmail(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        }
-                        if (snapshot.hasData) {
-                          return Text(
-                            'Correo electrónico: ${snapshot.data}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          );
-                        } else {
-                          return Text(
-                            'Correo electrónico no disponible',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          );
-                        }
-                      },
-                    ),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        _showEditProfileModal(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      ),
-                      child: Text(
-                        'Editar perfil',
-                        style: TextStyle(fontSize: 18),
-                      ),
+                    Expanded(
+                      child: _buildUserInfo(context),
                     ),
-                    SizedBox(height: 10),
-
                   ],
                 ),
               ),
@@ -131,14 +46,122 @@ class info extends StatelessWidget {
     );
   }
 
-  Future<String> _getCurrentUserEmail() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user = await auth.currentUser;
-    if (user != null) {
-      return user.email ?? 'Correo electrónico no disponible';
-    } else {
-      return 'Usuario no autenticado';
-    }
+  Widget _buildUserInfo(BuildContext context) {
+    return FutureBuilder<User?>(
+      future: _getCurrentUser(),
+      builder: (BuildContext context, AsyncSnapshot<User?> userSnapshot) {
+        if (userSnapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (userSnapshot.hasError) {
+          return Center(child: Text('Error: ${userSnapshot.error}'));
+        }
+        if (userSnapshot.hasData) {
+          return FutureBuilder<DocumentSnapshot>(
+            future: FirebaseFirestore.instance.collection('usuarios').doc(userSnapshot.data!.email).get(),
+            builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              if (snapshot.hasData && snapshot.data!.exists) {
+                var userData = snapshot.data!.data() as Map<String, dynamic>;
+                var username = userData['nombre'];
+                var etiqueta1 = userData['etiqueta1']; // Obtener etiqueta1
+                var etiqueta2 = userData['etiqueta2']; // Obtener etiqueta2
+                var etiqueta4 = userData['etiqueta4']; // Obtener etiqueta4
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+
+                    Text(
+                      username ?? 'Nombre de Usuario no disponible',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _showEditProfileModal(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20), // Ajusta el padding
+                        minimumSize: Size(0, 40), // Establece un ancho mínimo y un alto
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        backgroundColor: Color.fromRGBO(226, 169, 209, 1.0),
+                      ),
+                      child: Text(
+                        'Editar perfil',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+
+
+                    SizedBox(height: 20),
+                    Text(
+                      'Gustos',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    _buildEtiqueta('$etiqueta1'),
+                    _buildEtiqueta('$etiqueta2'),
+                    SizedBox(height: 20),
+                    Text(
+                      'Likes',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    _buildEtiqueta('$etiqueta4'),
+                    SizedBox(height: 20),
+
+                    SizedBox(height: 10),
+                  ],
+                );
+              } else {
+                return Center(child: Text('Nombre de Usuario no disponible'));
+              }
+            },
+          );
+        } else {
+          return Center(child: Text('Nombre de Usuario no disponible'));
+        }
+      },
+    );
+  }
+
+  Widget _buildEtiqueta(String etiqueta) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 5),
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        etiqueta,
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.black,
+        ),
+      ),
+    );
   }
 
   Future<User?> _getCurrentUser() async {
@@ -189,7 +212,7 @@ class info extends StatelessWidget {
   void _refreshPage(BuildContext context) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (BuildContext context) => info()),
+      MaterialPageRoute(builder: (BuildContext context) => Info()),
     );
   }
 }

@@ -50,7 +50,7 @@ class _FooterState extends State<Footer> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.map),
-          label: 'Tienda',
+          label: 'Map',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),

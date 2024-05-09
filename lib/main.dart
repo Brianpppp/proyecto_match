@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:todolist_firebase/screens/home_screen.dart';
 import 'package:todolist_firebase/screens/menu_card.dart';
 import 'package:todolist_firebase/screens/personal_info.dart';
-import 'package:todolist_firebase/screens/store_points.dart';
+import 'package:todolist_firebase/screens/map.dart';
 import 'package:todolist_firebase/screens/user.dart';
 import 'firebase_options.dart';
 import 'screens/login_registro_screen.dart'; // Ajusta la ruta de importación
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         '/menu': (context) => MenuPage(),
         '/store_points': (context) => StorePage(),
         '/user': (context) => UserPage(),
-        '/personal_info':(context)=> info(),
+        '/personal_info':(context)=> Info(),
       },
     );
   }

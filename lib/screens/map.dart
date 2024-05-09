@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../components/footer.dart';
 import '../components/header.dart';
