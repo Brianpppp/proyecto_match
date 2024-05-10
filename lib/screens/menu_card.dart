@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import '../components/Card_menu.dart';
+import '../components/Menu_Botton.dart';
 import '../components/footer.dart';
+
 
 class MenuPage extends StatelessWidget {
   @override
@@ -15,7 +18,7 @@ class MenuPage extends StatelessWidget {
               colors: [
                 Color.fromRGBO(255, 169, 209, 1),
                 Colors.white,
-              ], // Cambié el orden de los colores
+              ],
               stops: [0.5, 1.0],
             ),
           ),
@@ -26,7 +29,7 @@ class MenuPage extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: Container(
-                  color: Colors.black.withOpacity(0.5), // Capa semitransparente negra
+                  color: Colors.black.withOpacity(0.5),
                 ),
               ),
               Center(
@@ -39,11 +42,11 @@ class MenuPage extends StatelessWidget {
                         height: 100.0,
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: menuButton(
+                          child: MenuButton(
                             title: 'Hamburguesas',
-                            icon: Icons.restaurant,
+                            image: 'hamburguesaMenu.jpg',
                             onTap: () {
-                              // Navegar a la página de hamburguesas
+                              navigateToCards(context, 'hamburguesas');
                             },
                           ),
                         ),
@@ -53,11 +56,11 @@ class MenuPage extends StatelessWidget {
                         height: 100.0,
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: menuButton(
+                          child: MenuButton(
                             title: 'Bebidas',
-                            icon: Icons.local_cafe,
+                            image: 'bebidas.jpg',
                             onTap: () {
-                              // Navegar a la página de bebidas
+                              navigateToCards(context, 'bebida');
                             },
                           ),
                         ),
@@ -67,11 +70,11 @@ class MenuPage extends StatelessWidget {
                         height: 100.0,
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: menuButton(
-                            title: 'Snacks',
-                            icon: Icons.lunch_dining,
+                          child: MenuButton(
+                            title: 'Snakcs',
+                            image: 'nachos.jpg',
                             onTap: () {
-                              // Navegar a la página de snacks
+                              navigateToCards(context, 'snack');
                             },
                           ),
                         ),
@@ -81,25 +84,11 @@ class MenuPage extends StatelessWidget {
                         height: 100.0,
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: menuButton(
-                            title: 'Postres',
-                            icon: Icons.cake,
+                          child: MenuButton(
+                            title: 'Desserts',
+                            image: 'postr.jpg',
                             onTap: () {
-                              // Navegar a la página de postres
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 100.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: menuButton(
-                            title: 'Cócteles',
-                            icon: Icons.local_bar,
-                            onTap: () {
-                              // Navegar a la página de cócteles
+                              navigateToCards(context, 'postre');
                             },
                           ),
                         ),
@@ -115,34 +104,11 @@ class MenuPage extends StatelessWidget {
     );
   }
 
-  Widget menuButton(
-      {required String title,
-        required IconData icon,
-        required VoidCallback onTap}) {
-    return MaterialButton(
-      onPressed: onTap,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Icon(
-            icon,
-            size: 30.0,
-            color: Colors.black,
-          ),
-          SizedBox(width: 10.0),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-        ],
+  void navigateToCards(BuildContext context, String collection) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CardMenu(collection: collection),
       ),
     );
   }

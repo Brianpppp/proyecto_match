@@ -78,7 +78,10 @@ flutter:
     - assets/icono_cebolla.png
     - assets/icono_lechuga.png
     - assets/icono_huevo.png
-
+    - assets/hamburguesaMenu.jpg
+    - assets/bebidas.jpg
+    - assets/nachos.jpg
+    - assets/postr.jpg
 
 
 

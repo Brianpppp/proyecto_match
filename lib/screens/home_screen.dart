@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('usuarios').doc(user.email).get();
       if (snapshot.exists) {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
-        return data['etiquetaSeleccionada'] ?? '';
+        return data['etiqueta1'] ?? '';
       }
     } catch (e) {
       print('Error getting user selected label: $e');
