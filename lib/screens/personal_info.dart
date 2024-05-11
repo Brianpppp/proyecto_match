@@ -18,20 +18,13 @@ class Info extends StatelessWidget {
             child: Header(),
           ),
           Positioned.fill(
-            top: MediaQuery.of(context).padding.top + 60, // Ajusta la posición superior según tus necesidades
+            top: MediaQuery.of(context).padding.top + 60,
             child: Container(
               color: Color.fromRGBO(255, 169, 209, 1.0),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 20),
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.white,
-                      // Puedes agregar la imagen de perfil aquí
-                      // backgroundImage: AssetImage('assets/user_profile_image.jpg'),
-                    ),
                     SizedBox(height: 20),
                     Expanded(
                       child: _buildUserInfo(context),
@@ -69,13 +62,30 @@ class Info extends StatelessWidget {
               if (snapshot.hasData && snapshot.data!.exists) {
                 var userData = snapshot.data!.data() as Map<String, dynamic>;
                 var username = userData['nombre'];
-                var etiqueta1 = userData['etiqueta1']; // Obtener etiqueta1
-                var etiqueta2 = userData['etiqueta2']; // Obtener etiqueta2
-                var etiqueta4 = userData['etiqueta4']; // Obtener etiqueta4
+                var etiqueta1 = userData['etiqueta1'];
+                var etiqueta2 = userData['etiqueta2'];
+                var etiqueta4 = userData['etiqueta4'] as List<dynamic>;
+                var puntos = userData['puntos'] ?? 0; // Obtener los puntos del usuario
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-
+                    Text(
+                      'Información personal',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    SizedBox(height: 20),
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Colors.white,
+                      // Puedes agregar la imagen de perfil aquí
+                      // backgroundImage: AssetImage('assets/user_profile_image.jpg'),
+                    ),
+                    SizedBox(height: 20),
                     Text(
                       username ?? 'Nombre de Usuario no disponible',
                       style: TextStyle(
@@ -84,13 +94,62 @@ class Info extends StatelessWidget {
                         color: Colors.black,
                       ),
                     ),
+                    SizedBox(height: 10),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(12, 12, 20, 20), // Ajusta el espacio arriba y a los lados según sea necesario
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Por cada 1€ de compra que hagas en nuestro restaurante acumularás 10 puntos.',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 10), // Añade un espacio entre los textos
+                          Row(
+                            children: [
+                              SizedBox(width: 10),
+                              // Aquí agregamos el círculo de progreso con solo los puntos y de color rojo
+                              Stack(
+                                alignment: Alignment.center,
+
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    child: CircularProgressIndicator(
+                                      value: puntos / 225, // El valor máximo es 225
+                                      strokeWidth: 8,
+                                      backgroundColor: Colors.grey.withOpacity(0.3),
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.red), // Color rojo
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      '$puntos',
+                                      style: TextStyle(
+                                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black, // Cambiar el color del texto según sea necesario
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                     ElevatedButton(
                       onPressed: () {
                         _showEditProfileModal(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20), // Ajusta el padding
-                        minimumSize: Size(0, 40), // Establece un ancho mínimo y un alto
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        minimumSize: Size(0, 40),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -104,8 +163,6 @@ class Info extends StatelessWidget {
                         ),
                       ),
                     ),
-
-
                     SizedBox(height: 20),
                     Text(
                       'Gustos',
@@ -116,8 +173,15 @@ class Info extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10),
-                    _buildEtiqueta('$etiqueta1'),
-                    _buildEtiqueta('$etiqueta2'),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 10.0, // Espacio horizontal entre las etiquetas
+                      runSpacing: 10.0, // Espacio vertical entre las líneas
+                      children: [
+                        _buildEtiqueta(etiqueta1),
+                        _buildEtiqueta(etiqueta2),
+                      ],
+                    ),
                     SizedBox(height: 20),
                     Text(
                       'Likes',
@@ -128,10 +192,13 @@ class Info extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 10),
-                    _buildEtiqueta('$etiqueta4'),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 10.0, // Espacio horizontal entre las etiquetas
+                      runSpacing: 10.0, // Espacio vertical entre las líneas
+                      children: etiqueta4.map((etiqueta) => _buildEtiqueta(etiqueta)).toList(),
+                    ),
                     SizedBox(height: 20),
-
-                    SizedBox(height: 10),
                   ],
                 );
               } else {
@@ -169,7 +236,7 @@ class Info extends StatelessWidget {
     return auth.currentUser;
   }
 
-  void _showEditProfileModal(BuildContext context) {
+  void _showEditProfileModal(BuildContext context) async {
     TextEditingController _usernameController = TextEditingController();
 
     showDialog(
