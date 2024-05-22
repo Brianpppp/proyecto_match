@@ -32,6 +32,12 @@ dependencies:
     sdk: flutter
   flutter_xlider: ^3.5.0
   flutter_emoji: ^2.0.0
+  geolocator: ^11.1.0
+  flutter_map: ^3.0.0
+  latlong2: ^0.8.0
+  flutter_svg: ^1.0.3  # Asegúrate de usar la versión más reciente
+
+
 
 
 
