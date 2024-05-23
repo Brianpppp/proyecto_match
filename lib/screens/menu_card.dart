@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/Card_menu.dart';
 import '../components/Menu_Botton.dart';
 import '../components/footer.dart';
+import '../components/header.dart';
 
 
 class MenuPage extends StatelessWidget {
@@ -24,6 +25,7 @@ class MenuPage extends StatelessWidget {
           ),
           child: Stack(
             children: [
+              Header(),
               Positioned(
                 top: 0,
                 left: 0,
@@ -89,6 +91,20 @@ class MenuPage extends StatelessWidget {
                             image: 'postr.jpg',
                             onTap: () {
                               navigateToCards(context, 'postre');
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 100.0,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: MenuButton(
+                            title: 'Cocteles',
+                            image: 'cocteles.jpg',
+                            onTap: () {
+                              navigateToCards(context, 'coctel');
                             },
                           ),
                         ),

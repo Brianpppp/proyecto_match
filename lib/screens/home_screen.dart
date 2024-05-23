@@ -6,7 +6,6 @@ import '../components/food_cards.dart'; // Importar el componente FoodCard
 import '../components/footer.dart';
 import '../components/header.dart';
 
-
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -63,8 +62,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  void _nextPage() {
-    _pageController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.ease);
+  void _nextPage(int itemCount, int currentPageIndex) {
+    // Verifica si estamos en la última página
+    if (currentPageIndex == itemCount - 1) {
+      // Si estamos en la última página, volvemos a la primera página
+      _pageController.animateToPage(0, duration: Duration(milliseconds: 300), curve: Curves.ease);
+    } else {
+      // Si no estamos en la última página, avanzamos a la siguiente página
+      _pageController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.ease);
+    }
   }
 
   @override
@@ -92,7 +98,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Buttons(
-            nextPage: _nextPage,
+            nextPage: () {
+              int currentPageIndex = _pageController.page?.round() ?? 0;
+              int itemCount = _pageController.positions.isNotEmpty
+                  ? _pageController.positions.first.viewportDimension != null
+                  ? _pageController.positions.first.maxScrollExtent ~/ _pageController.positions.first.viewportDimension + 1
+                  : 0
+                  : 0;
+              _nextPage(itemCount, currentPageIndex);
+            },
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.03),
           Footer(),
@@ -250,13 +264,11 @@ class TabSection extends StatelessWidget {
   }
 }
 
-
 class ImageSection extends StatelessWidget {
   final List<Map<String, dynamic>> foodList;
   final PageController pageController;
 
   const ImageSection({Key? key, required this.foodList, required this.pageController}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
@@ -281,7 +293,6 @@ class ImageSection extends StatelessWidget {
   }
 }
 
-
 Future<User?> _getCurrentUser() async {
   return FirebaseAuth.instance.currentUser;
 }
@@ -299,7 +310,7 @@ Widget _buildUsernameWidget(BuildContext context, User user) {
           var userData = snapshot.data!.data() as Map<String, dynamic>;
           var username = userData['nombre'];
           var puntos = userData['puntos'] ?? 0;
-          var maxPuntos = 100; // Aquí puedes establecer el máximo de puntos posible
+          var maxPuntos = 400; // Aquí puedes establecer el máximo de puntos posible
           var progress = puntos / maxPuntos;
 
           return Container(
@@ -375,3 +386,5 @@ Widget _buildUsernameWidget(BuildContext context, User user) {
     },
   );
 }
+
+

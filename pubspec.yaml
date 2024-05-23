@@ -41,7 +41,10 @@ dependencies:
   firebase_core: ^2.24.2
   cloud_firestore: ^4.14.0
   firebase_auth: ^4.16.0
-
+  firebase_storage: ^11.1.2
+  image_picker: ^1.0.1
+  cached_network_image: ^3.2.0
+  http: ^0.13.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -82,6 +85,7 @@ flutter:
     - assets/bebidas.jpg
     - assets/nachos.jpg
     - assets/postr.jpg
+    - assets/cocteles.jpg
 
 
 
