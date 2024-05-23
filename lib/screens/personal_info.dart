@@ -22,14 +22,14 @@ class Info extends StatelessWidget {
             child: Container(
               color: Color.fromRGBO(255, 169, 209, 1.0),
               child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 20),
-                    Expanded(
-                      child: _buildUserInfo(context),
-                    ),
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 20),
+                      _buildUserInfo(context),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -71,9 +71,9 @@ class Info extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Información personal',
+                      'Personal information',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -89,17 +89,15 @@ class Info extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Positioned(
-                            child: CircleAvatar(
-                              radius: 50,
-                              backgroundColor: Colors.white,
-                              backgroundImage: AssetImage('assets/match3.png'),
-                            ),
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.white,
+                            backgroundImage: AssetImage('assets/match3.png'),
                           ),
                           Padding(
                             padding: EdgeInsets.all(16.0), // Ajusta el valor según tus necesidades
                             child: Text(
-                              username ?? 'Nombre de Usuario no disponible',
+                              username ?? 'Username not available',
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -120,7 +118,7 @@ class Info extends StatelessWidget {
                               backgroundColor: Color.fromRGBO(226, 169, 209, 1.0),
                             ),
                             child: Text(
-                              'Editar perfil',
+                              'Edit profile',
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.white,
@@ -134,7 +132,7 @@ class Info extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Recuento puntos',
+                                  'Points count',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -147,7 +145,7 @@ class Info extends StatelessWidget {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        'Por cada 1€ de compra que hagas en nuestro restaurante acumularás 10 puntos.',
+                                        'For every 1€ of purchase that you make in our restaurant you will acumulate 10 points.',
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.black,
@@ -192,7 +190,7 @@ class Info extends StatelessWidget {
                     ),
 
                     Text(
-                      'Gustos de ' + username,
+                      'Preferences from ' + username,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -211,7 +209,7 @@ class Info extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'Likes de ' + username,
+                      'Likes from ' + username,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -224,6 +222,15 @@ class Info extends StatelessWidget {
                       spacing: 10.0, // Espacio horizontal entre las etiquetas
                       runSpacing: 10.0, // Espacio vertical entre las líneas
                       children: etiqueta4.map((etiqueta) => _buildEtiqueta(etiqueta)).toList(),
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      'Likes list',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                     SizedBox(height: 20),
                   ],
@@ -270,10 +277,10 @@ class Info extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Editar perfil'),
+          title: Text('Edit profile'),
           content: TextField(
             controller: _usernameController,
-            decoration: InputDecoration(labelText: 'Nuevo nombre de usuario'),
+            decoration: InputDecoration(labelText: 'New user name'),
           ),
           actions: [
             ElevatedButton(
@@ -289,13 +296,13 @@ class Info extends StatelessWidget {
                   }
                 }
               },
-              child: Text('Guardar'),
+              child: Text('Save'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Cerrar el modal
               },
-              child: Text('Cancelar'),
+              child: Text('Cancel'),
             ),
           ],
         );
@@ -310,4 +317,3 @@ class Info extends StatelessWidget {
     );
   }
 }
-
