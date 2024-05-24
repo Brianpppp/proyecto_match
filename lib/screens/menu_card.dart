@@ -4,7 +4,6 @@ import '../components/Menu_Botton.dart';
 import '../components/footer.dart';
 import '../components/header.dart';
 
-
 class MenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -14,16 +13,17 @@ class MenuPage extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
               colors: [
-                Color.fromRGBO(255, 169, 209, 1),
-                Colors.white,
+                Color.fromRGBO(255, 169, 209, 1), // Rosa
+                Color.fromRGBO(255, 169, 209, 1), // Rosa (repetido)
+                Colors.white, // Blanco
               ],
-              stops: [0.5, 1.0],
+              stops: [0.0, 0.30, 0.06], // Distribución de colores: 0% rosa, 5% rosa, 6% blanco
             ),
           ),
-          child: Stack(
+        child: Stack(
             children: [
               Header(),
               Positioned(
@@ -41,9 +41,9 @@ class MenuPage extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: double.infinity,
-                        height: 100.0,
+                        height: 150.0,
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(15.0),
                           child: MenuButton(
                             title: 'Hamburguesas',
                             image: 'hamburguesaMenu.jpg',
@@ -55,9 +55,9 @@ class MenuPage extends StatelessWidget {
                       ),
                       SizedBox(
                         width: double.infinity,
-                        height: 100.0,
+                        height: 150.0,
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(15.0),
                           child: MenuButton(
                             title: 'Bebidas',
                             image: 'bebidas.jpg',
@@ -69,9 +69,9 @@ class MenuPage extends StatelessWidget {
                       ),
                       SizedBox(
                         width: double.infinity,
-                        height: 100.0,
+                        height: 150.0,
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(15.0),
                           child: MenuButton(
                             title: 'Snakcs',
                             image: 'nachos.jpg',
@@ -83,9 +83,9 @@ class MenuPage extends StatelessWidget {
                       ),
                       SizedBox(
                         width: double.infinity,
-                        height: 100.0,
+                        height: 150.0,
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(15.0),
                           child: MenuButton(
                             title: 'Desserts',
                             image: 'postr.jpg',
@@ -97,9 +97,9 @@ class MenuPage extends StatelessWidget {
                       ),
                       SizedBox(
                         width: double.infinity,
-                        height: 100.0,
+                        height: 150.0,
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(15.0),
                           child: MenuButton(
                             title: 'Cocteles',
                             image: 'cocteles.jpg',

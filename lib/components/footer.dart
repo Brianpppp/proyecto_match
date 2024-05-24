@@ -42,7 +42,7 @@ class _FooterState extends State<Footer> {
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          label: 'Inicio',
+          label: 'Inici',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.fastfood_sharp),
