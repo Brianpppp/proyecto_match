@@ -3,29 +3,50 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Details.dart';
 import 'footer.dart';
 
-
-class CardMenu extends StatelessWidget {
+class CardMenu extends StatefulWidget {
   final String collection;
 
   CardMenu({required this.collection});
+
+  @override
+  _CardMenuState createState() => _CardMenuState();
+}
+
+class _CardMenuState extends State<CardMenu> {
+  late List<int> counters;
+
+  @override
+  void initState() {
+    super.initState();
+    counters = List<int>.filled(0, 0, growable: true);
+    _fetchCounters();
+  }
+
+  void _fetchCounters() async {
+    final snapshot = await FirebaseFirestore.instance.collection(widget.collection).get();
+    setState(() {
+      counters = List<int>.filled(snapshot.docs.length, 0, growable: true);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-
           Expanded(
             child: StreamBuilder(
-              stream: FirebaseFirestore.instance.collection(collection).snapshots(),
+              stream: FirebaseFirestore.instance.collection(widget.collection).snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 } else {
-                  return ListView(
-                    children: snapshot.data!.docs.map((doc) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      final doc = snapshot.data!.docs[index];
                       return InkWell(
                         onTap: () {
                           Navigator.push(
@@ -36,10 +57,10 @@ class CardMenu extends StatelessWidget {
                           );
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(15.0),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 1.0, // El contenedor ocupa el 90% del ancho de la pantalla
-                            height: MediaQuery.of(context).size.width * 0.5,
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.width * 0.4, // Reducir la altura de la caja general
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20.0),
@@ -51,29 +72,18 @@ class CardMenu extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.25, // Ancho del contenedor de la imagen
-                                      height: MediaQuery.of(context).size.width * 0.3,
+                                      margin: EdgeInsets.all(10.0),
+                                      width: MediaQuery.of(context).size.width * 0.25,
+                                      height: MediaQuery.of(context).size.width * 0.25,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20.0),
-                                          bottomLeft: Radius.circular(20.0),
-                                          topRight: Radius.circular(20.0), // Bordes redondeados en la parte superior derecha
-                                          bottomRight: Radius.circular(20.0), // Bordes redondeados en la parte inferior derecha
-                                        ),
-                                        color: Colors.pinkAccent[100], // Color de fondo rosa claro
+                                        borderRadius: BorderRadius.circular(20.0),
+                                        color: Color.fromRGBO(255, 169, 209, 1),
                                       ),
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20.0),
-                                          bottomLeft: Radius.circular(20.0),
-                                          topRight: Radius.circular(20.0), // Bordes redondeados en la parte superior derecha
-                                          bottomRight: Radius.circular(20.0), // Bordes redondeados en la parte inferior derecha
-                                        ),
+                                        borderRadius: BorderRadius.circular(20.0),
                                         child: Image.network(
                                           doc['url'],
                                           fit: BoxFit.cover,
-                                          width: MediaQuery.of(context).size.width * 0.25, // Ancho de la imagen
-                                          height: MediaQuery.of(context).size.width * 0.3,
                                         ),
                                       ),
                                     ),
@@ -82,6 +92,7 @@ class CardMenu extends StatelessWidget {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               doc['apodo'],
@@ -90,13 +101,55 @@ class CardMenu extends StatelessWidget {
                                                 fontSize: 18.0,
                                               ),
                                             ),
-                                            SizedBox(height: 8.0),
+                                            SizedBox(height: 4.0), // Reducir espacio entre los textos
                                             Text(
                                               doc['descripcion'],
                                               textAlign: TextAlign.justify,
                                               style: TextStyle(
                                                 fontSize: 12.0,
                                               ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          color: Color.fromRGBO(255, 169, 209, 1),
+                                        ),
+                                        padding: EdgeInsets.all(4.0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Icons.add, color: Colors.red), // Iconos rojos
+                                              onPressed: () {
+                                                setState(() {
+                                                  counters[index]++;
+                                                  _updateCounter(doc.id, counters[index]);
+                                                });
+                                              },
+                                            ),
+                                            Text(
+                                              counters[index].toString(), // Contador
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white, // Texto rojo
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.remove, color: Colors.red), // Iconos rojos
+                                              onPressed: () {
+                                                if (counters[index] > 0) {
+                                                  setState(() {
+                                                    counters[index]--;
+                                                    _updateCounter(doc.id, counters[index]);
+                                                  });
+                                                }
+                                              },
                                             ),
                                           ],
                                         ),
@@ -109,7 +162,7 @@ class CardMenu extends StatelessWidget {
                           ),
                         ),
                       );
-                    }).toList(),
+                    },
                   );
                 }
               },
@@ -120,5 +173,9 @@ class CardMenu extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _updateCounter(String docId, int counter) {
+    FirebaseFirestore.instance.collection(widget.collection).doc(docId).update({'counter': counter});
   }
 }

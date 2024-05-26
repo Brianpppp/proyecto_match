@@ -23,7 +23,7 @@ class MenuPage extends StatelessWidget {
               stops: [0.0, 0.30, 0.06], // Distribución de colores: 0% rosa, 5% rosa, 6% blanco
             ),
           ),
-        child: Stack(
+          child: Stack(
             children: [
               Header(),
               Positioned(
@@ -39,77 +39,117 @@ class MenuPage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 150.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: MenuButton(
-                            title: 'Hamburguesas',
-                            image: 'hamburguesaMenu.jpg',
-                            onTap: () {
-                              navigateToCards(context, 'hamburguesas');
-                            },
-                          ),
-                        ),
+                      buildMenuItem(
+                        context,
+                        'Hamburguesas',
+                        'hamburguesaMenu.jpg',
+                            () => navigateToCards(context, 'hamburguesas'),
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 150.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: MenuButton(
-                            title: 'Bebidas',
-                            image: 'bebidas.jpg',
-                            onTap: () {
-                              navigateToCards(context, 'bebida');
-                            },
-                          ),
-                        ),
+                      SizedBox(height: 30), // Añade espacio vertical entre las cajas
+
+                      buildMenuItem(
+                        context,
+                        'Bebidas',
+                        'bebidas.jpg',
+                            () => navigateToCards(context, 'bebida'),
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 150.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: MenuButton(
-                            title: 'Snakcs',
-                            image: 'nachos.jpg',
-                            onTap: () {
-                              navigateToCards(context, 'snack');
-                            },
-                          ),
-                        ),
+                      SizedBox(height: 30), // Añade espacio vertical entre las cajas
+
+                      buildMenuItem(
+                        context,
+                        'Snacks',
+                        'nachos.jpg',
+                            () => navigateToCards(context, 'snack'),
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 150.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: MenuButton(
-                            title: 'Desserts',
-                            image: 'postr.jpg',
-                            onTap: () {
-                              navigateToCards(context, 'postre');
-                            },
-                          ),
-                        ),
+                      SizedBox(height: 30), // Añade espacio vertical entre las cajas
+
+                      buildMenuItem(
+                        context,
+                        'Desserts',
+                        'postr.jpg',
+                            () => navigateToCards(context, 'postre'),
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 150.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: MenuButton(
-                            title: 'Cocteles',
-                            image: 'cocteles.jpg',
-                            onTap: () {
-                              navigateToCards(context, 'coctel');
-                            },
-                          ),
-                        ),
+                      SizedBox(height: 30), // Añade espacio vertical entre las cajas
+
+                      buildMenuItem(
+                        context,
+                        'Cocteles',
+                        'cocteles.jpg',
+                            () => navigateToCards(context, 'coctel'),
                       ),
                     ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildMenuItem(BuildContext context, String title, String image, VoidCallback onTap) {
+    return SizedBox(
+      width: double.infinity,
+      height: 110.0,
+
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4.0), // Reduce el espacio entre las cajas
+        child: GestureDetector(
+          onTap: onTap,
+          child: Stack(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 90.0, right: 40.0), // Ajusta el margen para hacer la caja más corta
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                  color: Colors.white, // Fondo blanco para la caja principal
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 1.0), // Ajusta el padding para reducir la longitud de la caja de texto
+                  child: Center(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 50,
+                top: 10,
+                child: Container(
+                  width: 90.0,
+                  height: 80.0,
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(255, 169, 209, 1), // Fondo rosa
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image.asset(
+                      image,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),

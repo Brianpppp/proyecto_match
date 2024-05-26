@@ -11,6 +11,20 @@ class Info extends StatelessWidget {
       bottomNavigationBar: Footer(),
       body: Stack(
         children: [
+          Column(
+            children: [
+              Expanded(
+                flex: 7,  // Proporción aumentada para simular un valor intermedio entre 1 y 2
+                child: Container(
+                  color: Color.fromRGBO(255, 169, 209, 1),
+                ),
+              ),
+              Expanded(
+                flex: 6,  // Proporción ajustada para mantener el equilibrio
+                child: Container(color: Colors.white),
+              ),
+            ],
+          ),
           Positioned(
             top: 0,
             left: 0,
@@ -19,17 +33,14 @@ class Info extends StatelessWidget {
           ),
           Positioned.fill(
             top: MediaQuery.of(context).padding.top + 60,
-            child: Container(
-              color: Color.fromRGBO(255, 169, 209, 1.0),
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 20),
-                      _buildUserInfo(context),
-                    ],
-                  ),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 20),
+                    _buildUserInfo(context),
+                  ],
                 ),
               ),
             ),
@@ -38,7 +49,6 @@ class Info extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildUserInfo(BuildContext context) {
     return FutureBuilder<User?>(
       future: _getCurrentUser(),
@@ -73,7 +83,7 @@ class Info extends StatelessWidget {
                     Text(
                       'Personal information',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -83,10 +93,19 @@ class Info extends StatelessWidget {
                       padding: EdgeInsets.all(16.0),
                       margin: EdgeInsets.symmetric(horizontal: 26.0, vertical: 8.0),
                       decoration: BoxDecoration(
-                        color: Colors.white, // Cambia el color para visualizar
+                        color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                            offset: Offset(0, 3), // Cambios de posición de la sombra
+                          ),
+                        ],
                       ),
-                      child: Column(
+
+                    child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           CircleAvatar(
@@ -115,8 +134,9 @@ class Info extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              backgroundColor: Color.fromRGBO(226, 169, 209, 1.0),
-                            ),
+                              backgroundColor: Color.fromRGBO(255, 169, 209, 1),
+
+                          ),
                             child: Text(
                               'Edit profile',
                               style: TextStyle(
@@ -189,6 +209,8 @@ class Info extends StatelessWidget {
                       ),
                     ),
 
+                    SizedBox(height: 20), // Añade un espacio entre los textos
+
                     Text(
                       'Preferences from ' + username,
                       style: TextStyle(
@@ -252,13 +274,13 @@ class Info extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 5),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color.fromRGBO(255, 169, 209, 1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
         etiqueta,
         style: TextStyle(
-          fontSize: 18,
+          fontSize: 16,
           color: Colors.black,
         ),
       ),

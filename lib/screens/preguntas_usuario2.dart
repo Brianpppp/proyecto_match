@@ -120,7 +120,7 @@ class _PreguntasUsuario2State extends State<PreguntasUsuario2>
           onPressed: () {
             Navigator.pop(context);
           },
-          color: Color.fromRGBO(226, 169, 209, 1.0), // Usando el mismo color
+          color: Color.fromRGBO(226, 169, 209, 1.0),
         ),
         title: LinearProgressIndicator(
           value: _progressValue,

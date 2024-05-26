@@ -22,6 +22,19 @@ class UserPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Center(
+                      child: Text(
+                        'My account',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 24, // Tamaño del texto aumentado
+                          fontWeight: FontWeight.w900, // Mayor peso para resaltar más
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20), // Añade espacio vertical entre las cajas
+
                     ListTile(
                       leading: Icon(Icons.person),
                       title: Text(
