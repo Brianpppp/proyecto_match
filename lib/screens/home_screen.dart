@@ -180,12 +180,12 @@ class Buttons extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.09),
+                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.30),
                 width: buttonSize,
                 height: buttonSize,
                 decoration: BoxDecoration(color: Colors.purple, shape: BoxShape.circle,),
                 child: IconButton(
-                  iconSize: buttonSize * 0.7,
+                  iconSize: buttonSize * 0.6,
                   icon: Icon(Icons.close, color: Colors.white),
                   onPressed: nextPage, // Movemos la página al hacer clic en el botón "X"
                 ),
@@ -196,7 +196,7 @@ class Buttons extends StatelessWidget {
                 height: buttonSize,
                 decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle,),
                 child: IconButton(
-                  iconSize: buttonSize * 0.7,
+                  iconSize: buttonSize * 0.6,
                   icon: Icon(Icons.favorite, color: Colors.white),
                   onPressed: (){}, // Función del botón de "Favorito" sin asignar
                 ),
@@ -241,10 +241,42 @@ class TabSection extends StatelessWidget {
           labelColor: Colors.black,
           indicatorColor: Colors.red,
           tabs: [
-            Tab(text: 'Food'),
-            Tab(text: 'Drinks'),
-            Tab(text: 'Snacks'),
-            Tab(text: 'Desserts'),
+            Tab(
+              child: Text(
+                'Food',
+                style: TextStyle(
+                  fontSize: 17.0, // Modifica el tamaño de la letra aquí
+                  fontWeight: FontWeight.bold, // Aquí aplicas la propiedad fontWeight
+                ),
+              ),
+            ),
+            Tab(
+              child: Text(
+                'Drinks',
+                style: TextStyle(
+                  fontSize: 17.0, // Modifica el tamaño de la letra aquí
+                  fontWeight: FontWeight.bold, // Aquí aplicas la propiedad fontWeight
+                ),
+              ),
+            ),
+            Tab(
+              child: Text(
+                'Snacks',
+                style: TextStyle(
+                  fontSize: 17.0, // Modifica el tamaño de la letra aquí
+                  fontWeight: FontWeight.bold, // Aquí aplicas la propiedad fontWeight
+                ),
+              ),
+            ),
+            Tab(
+              child: Text(
+                'Desserts',
+                style: TextStyle(
+                  fontSize: 17.0, // Modifica el tamaño de la letra aquí
+                  fontWeight: FontWeight.bold, // Aquí aplicas la propiedad fontWeight
+                ),
+              ),
+            ),
           ],
         ),
         SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -310,14 +342,14 @@ Widget _buildUsernameWidget(BuildContext context, User user) {
           var userData = snapshot.data!.data() as Map<String, dynamic>;
           var username = userData['nombre'];
           var puntos = userData['puntos'] ?? 0;
-          var maxPuntos = 400; // Aquí puedes establecer el máximo de puntos posible
+          var maxPuntos = 225; // Aquí puedes establecer el máximo de puntos posible
           var progress = puntos / maxPuntos;
 
           return Container(
-            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+            margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.12),
             decoration: BoxDecoration(
               color: Colors.white, // Color de fondo blanco
-              borderRadius: BorderRadius.circular(10), // Bordes redondeados del contenedor
+              borderRadius: BorderRadius.circular(20), // Bordes redondeados del contenedor
             ),
             padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
             child: Column(
@@ -326,10 +358,10 @@ Widget _buildUsernameWidget(BuildContext context, User user) {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      username ?? 'Nombre de Usuario no disponible',
+                       username ?? 'Nombre de Usuario no disponible',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.width * 0.06,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                       ),
@@ -343,9 +375,9 @@ Widget _buildUsernameWidget(BuildContext context, User user) {
                           width: MediaQuery.of(context).size.width * 0.09, // Tamaño del gráfico circular (ancho)
                           child: CircularProgressIndicator(
                             value: progress,
-                            strokeWidth: MediaQuery.of(context).size.width * 0.012, // Grosor del círculo
+                            strokeWidth: MediaQuery.of(context).size.width * 0.016  , // Grosor del círculo
                             valueColor: AlwaysStoppedAnimation<Color>(Colors.red), // Cambia el color a rojo
-                            backgroundColor: Colors.grey,
+                            backgroundColor:Color.fromRGBO(255, 169, 209, 1),
                           ),
                         ),
                         Text(
