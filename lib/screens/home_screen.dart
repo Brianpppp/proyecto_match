@@ -69,6 +69,18 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     }
     return '';
   }
+  Future<void> _addToFavorites(Map<String, dynamic> foodItem) async {
+    User? user = await _getCurrentUser();
+    if (user != null) {
+      DocumentReference userRef = FirebaseFirestore.instance.collection('usuarios').doc(user.email);
+
+      await userRef.update({
+        'favoritos': FieldValue.arrayUnion([foodItem]),
+      }).catchError((error) {
+        print('Error adding to favorites: $error');
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -123,7 +135,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   : 0;
               _nextPage(itemCount, currentPageIndex);
             },
+            onFavorite: () {
+              int currentPageIndex = _pageController.page?.round() ?? 0;
+              Map<String, dynamic> currentItem = hamburguesas[currentPageIndex]; // Cambia 'hamburguesas' si es necesario
+              _addToFavorites(currentItem);
+            },
           ),
+
           SizedBox(height: MediaQuery.of(context).size.height * 0.03),
           Footer(),
         ],
@@ -181,8 +199,8 @@ class PhraseAndTexts extends StatelessWidget {
 
 class Buttons extends StatelessWidget {
   final VoidCallback nextPage;
-
-  const Buttons({Key? key, required this.nextPage}) : super(key: key);
+  final VoidCallback onFavorite;
+  const Buttons({Key? key, required this.nextPage,required this.onFavorite}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +232,7 @@ class Buttons extends StatelessWidget {
                 child: IconButton(
                   iconSize: buttonSize * 0.6,
                   icon: Icon(Icons.favorite, color: Colors.white),
-                  onPressed: (){}, // Función del botón de "Favorito" sin asignar
+                  onPressed: onFavorite, // Función del botón de "Favorito" sin asignar
                 ),
               ),
             ],
