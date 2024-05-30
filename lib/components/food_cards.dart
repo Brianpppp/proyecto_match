@@ -21,21 +21,21 @@ class FoodCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
-    Widget build(BuildContext context) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      final screenHeight = MediaQuery.of(context).size.height;
-      final double cardWidth = screenWidth * 0.4;
-      final double cardHeight = screenHeight * 0.35;
-      final double horizontalPadding = screenWidth * 0.06;
-      final double verticalPadding = screenHeight * 0.01;
-      final double nameFontSize = screenWidth * 0.05; // Reduje el tamaño de la fuente del nombre
-      final double priceFontSize = screenWidth * 0.04;
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final double cardWidth = screenWidth * 0.4;
+    final double cardHeight = screenHeight * 0.35;
+    final double horizontalPadding = screenWidth * 0.06;
+    final double verticalPadding = screenHeight * 0.01;
+    final double nameFontSize = screenWidth * 0.05;
+    final double priceFontSize = screenWidth * 0.045; // Aumenta el tamaño de la fuente del precio
 
     return Container(
-      margin: EdgeInsets.all(20.0), // Margen en todos los lados
+      margin: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50.0),
-        color: Colors.white, // Color de fondo rojo
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2),
@@ -53,33 +53,48 @@ class FoodCard extends StatelessWidget {
           child: SingleChildScrollView(
             child: Container(
               color: Colors.white,
-              padding: EdgeInsets.all(40.0), // Margen en todos los lados dentro del contenedor
+              padding: EdgeInsets.all(40.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    apodo,
-                    style: TextStyle(
-                      fontSize: nameFontSize,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold, // Añade la fuente negrita aquí
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        apodo,
+                        style: TextStyle(
+                          fontSize: nameFontSize,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '€${precio.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: priceFontSize,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: 5.0), // Reducido el espacio vertical
                   Text(
                     nombre,
                     style: TextStyle(fontSize: nameFontSize),
                   ),
-                  SizedBox(height: 10.0), // Margen vertical adicional entre elementos
+                  SizedBox(height: 10.0), // Reducido el espacio vertical
                   Align(
                     alignment: Alignment.center,
                     child: Image.network(
                       url,
-                      width: cardWidth * 1.2, // Aumentando el tamaño de la imagen
-                      height: cardHeight * 0.6, // Aumentando el tamaño de la imagen
+                      width: cardWidth * 1.2,
+                      height: cardHeight * 0.6,
                       fit: BoxFit.cover,
                     ),
                   ),
-                  SizedBox(height: 10.0), // Margen vertical adicional entre elementos
+                  SizedBox(height: 15.0), // Reducido el espacio vertical
                   Container(
                     width: double.infinity,
                     child: Wrap(
@@ -90,12 +105,12 @@ class FoodCard extends StatelessWidget {
                           padding: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             color: Colors.red,
-                            borderRadius: BorderRadius.circular(30.0),
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
                           child: Text(
                             tag,
                             style: TextStyle(
-                              fontSize: priceFontSize,
+                              fontSize: 16.0, // Cambia este valor para reducir el tamaño de la letra
                               color: Colors.white,
                             ),
                           ),
@@ -103,6 +118,7 @@ class FoodCard extends StatelessWidget {
                       }).toList(),
                     ),
                   ),
+
                 ],
               ),
             ),

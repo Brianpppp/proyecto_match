@@ -3,6 +3,9 @@ import '../components/Card_menu.dart';
 import '../components/Menu_Botton.dart';
 import '../components/footer.dart';
 import '../components/header.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../components/firestore_funciones.dart';
 
 class MenuPage extends StatelessWidget {
   @override
@@ -42,7 +45,7 @@ class MenuPage extends StatelessWidget {
                       buildMenuItem(
                         context,
                         'Hamburguesas',
-                        'hamburguesaMenu.jpg',
+                        'la_rubia.png',
                             () => navigateToCards(context, 'hamburguesas'),
                       ),
                       SizedBox(height: 30), // Añade espacio vertical entre las cajas
@@ -50,7 +53,7 @@ class MenuPage extends StatelessWidget {
                       buildMenuItem(
                         context,
                         'Bebidas',
-                        'bebidas.jpg',
+                        'coca_cola_zero.png',
                             () => navigateToCards(context, 'bebida'),
                       ),
                       SizedBox(height: 30), // Añade espacio vertical entre las cajas
@@ -58,7 +61,7 @@ class MenuPage extends StatelessWidget {
                       buildMenuItem(
                         context,
                         'Snacks',
-                        'nachos.jpg',
+                        'nachos_con_queso.png',
                             () => navigateToCards(context, 'snack'),
                       ),
                       SizedBox(height: 30), // Añade espacio vertical entre las cajas
@@ -66,7 +69,7 @@ class MenuPage extends StatelessWidget {
                       buildMenuItem(
                         context,
                         'Desserts',
-                        'postr.jpg',
+                        'la_union_del_loto.png',
                             () => navigateToCards(context, 'postre'),
                       ),
                       SizedBox(height: 30), // Añade espacio vertical entre las cajas
@@ -74,7 +77,7 @@ class MenuPage extends StatelessWidget {
                       buildMenuItem(
                         context,
                         'Cocteles',
-                        'cocteles.jpg',
+                        'en_la_cama.png',
                             () => navigateToCards(context, 'coctel'),
                       ),
                     ],

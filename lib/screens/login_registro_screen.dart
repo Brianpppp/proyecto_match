@@ -93,6 +93,7 @@ class _AuthScreenState extends State<AuthScreen> {
           ),
         );
 
+
         if (formularioCompletado) {
           await FirebaseFirestore.instance.collection('usuarios').doc(_emailController.text).update({
             'formulario_completado': true,
@@ -153,12 +154,31 @@ class _AuthScreenState extends State<AuthScreen> {
           'formulario_completado': false,
         });
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Registration successful!'),
-            duration: Duration(seconds: 2),
-          ),
+        showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text('Registro exitoso', style: TextStyle(fontSize: 24)),
+                  SizedBox(height: 10),
+                  Text('¡Tu registro ha sido exitoso!'),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text('Cerrar'),
+                  ),
+                ],
+              ),
+            );
+          },
         );
+
+
 
         Future.delayed(Duration(seconds: 2), () {
           setState(() {
