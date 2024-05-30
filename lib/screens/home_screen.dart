@@ -269,8 +269,16 @@ class TabSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> sortedHamburguesas = hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] == selectedLabel).toList();
-    List<Map<String, dynamic>> filteredHamburguesas = _filterAndSort(hamburguesas, filtrar);
+
+    List<Map<String, dynamic>> filteredHamburguesas = _filterAndSort(
+        hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] == selectedLabel).toList(),
+        filtrar
+    );
+    List<Map<String, dynamic>> filteredHamburguesas2 = _filterAndSort(
+        hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] != selectedLabel).toList(),
+        filtrar
+    );
+
     List<Map<String, dynamic>> filteredBebidas = _filterAndSort(bebidas, filtrar);
    // List<Map<String, dynamic>> remainingBebidas = bebidas.where((bebida) => bebida['etiqueta'] != filtrar).toList();
     List<Map<String, dynamic>> filteredSnacks = _filterAndSort(snacks, filtrar);
@@ -327,7 +335,7 @@ class TabSection extends StatelessWidget {
           child: TabBarView(
             controller: tabController,
             children: [
-              ImageSection(foodList: sortedHamburguesas + filteredHamburguesas, pageController: pageController),
+              ImageSection(foodList:  filteredHamburguesas + filteredHamburguesas2, pageController: pageController),
               ImageSection(foodList: filteredBebidas , pageController: pageController),
               ImageSection(foodList:  filteredSnacks  , pageController: pageController),
               ImageSection(foodList: filteredPostres  , pageController: pageController),
