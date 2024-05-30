@@ -24,7 +24,7 @@ class UserPage extends StatelessWidget {
                   children: [
                     Center(
                       child: Text(
-                        'My account',
+                        'Mi cuenta',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontSize: 24, // Tamaño del texto aumentado

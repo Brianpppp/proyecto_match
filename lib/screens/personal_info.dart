@@ -81,7 +81,7 @@ class Info extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Personal information',
+                      'Información personal',
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -116,7 +116,7 @@ class Info extends StatelessWidget {
                           Padding(
                             padding: EdgeInsets.all(16.0), // Ajusta el valor según tus necesidades
                             child: Text(
-                              username ?? 'Username not available',
+                              username ?? 'nombre de usuario no disponible',
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -138,7 +138,7 @@ class Info extends StatelessWidget {
 
                           ),
                             child: Text(
-                              'Edit profile',
+                              'Editar perfil',
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Colors.white,
@@ -152,7 +152,7 @@ class Info extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Points count',
+                                  'Puntos',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -165,7 +165,7 @@ class Info extends StatelessWidget {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        'For every 1€ of purchase that you make in our restaurant you will acumulate 10 points.',
+                                        'Por cada 1€ de compra en nuestro restaurante optendras 10 puntos en nuestra tienda.',
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.black,
@@ -212,7 +212,7 @@ class Info extends StatelessWidget {
                     SizedBox(height: 20), // Añade un espacio entre los textos
 
                     Text(
-                      'Preferences from ' + username,
+                      'Preferencias de ' + username,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -231,7 +231,7 @@ class Info extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'Likes from ' + username,
+                      'Gustos de ' + username,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -247,7 +247,7 @@ class Info extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'Likes list',
+                      'Lista de likes',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -299,10 +299,10 @@ class Info extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit profile'),
+          title: Text('Editar perfil'),
           content: TextField(
             controller: _usernameController,
-            decoration: InputDecoration(labelText: 'New user name'),
+            decoration: InputDecoration(labelText: 'Nuevo nombre de usuario'),
           ),
           actions: [
             ElevatedButton(
@@ -318,13 +318,13 @@ class Info extends StatelessWidget {
                   }
                 }
               },
-              child: Text('Save'),
+              child: Text('Guardar'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Cerrar el modal
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
           ],
         );

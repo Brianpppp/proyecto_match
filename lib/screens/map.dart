@@ -52,7 +52,7 @@ class _StorePageState extends State<StorePage> {
                 children: [
                   Center(
                     child: Text(
-                      'Match restaurants in Barcelona',
+                      'Restaurantes Match en Barcelona',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 32, // Tamaño del texto aumentado
