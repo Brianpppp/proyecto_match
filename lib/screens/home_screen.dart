@@ -232,7 +232,7 @@ class Buttons extends StatelessWidget {
                 child: IconButton(
                   iconSize: buttonSize * 0.6,
                   icon: Icon(Icons.favorite, color: Colors.white),
-                  onPressed: onFavorite, // Función del botón de "Favorito" sin asignar
+                  onPressed: onFavorite,  // Función del botón de "Favorito" sin asignar
                 ),
               ),
             ],
@@ -269,14 +269,22 @@ class TabSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> sortedHamburguesas = hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] == selectedLabel).toList();
-    List<Map<String, dynamic>> filteredHamburguesas = _filterAndSort(hamburguesas, filtrar);
+
+    List<Map<String, dynamic>> filteredHamburguesas = _filterAndSort(
+        hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] == selectedLabel).toList(),
+        filtrar
+    );
+    List<Map<String, dynamic>> filteredHamburguesas2 = _filterAndSort(
+        hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] != selectedLabel).toList(),
+        filtrar
+    );
+
     List<Map<String, dynamic>> filteredBebidas = _filterAndSort(bebidas, filtrar);
-    List<Map<String, dynamic>> remainingBebidas = bebidas.where((bebida) => bebida['etiqueta'] != filtrar).toList();
+   // List<Map<String, dynamic>> remainingBebidas = bebidas.where((bebida) => bebida['etiqueta'] != filtrar).toList();
     List<Map<String, dynamic>> filteredSnacks = _filterAndSort(snacks, filtrar);
-    List<Map<String, dynamic>> remainingSnacks = snacks.where((snack) => snack['etiqueta'] != filtrar).toList();
+   // List<Map<String, dynamic>> remainingSnacks = snacks.where((snack) => snack['etiqueta'] != filtrar).toList();
     List<Map<String, dynamic>> filteredPostres = _filterAndSort(postres, filtrar);
-    List<Map<String, dynamic>> remainingPostres = postres.where((postre) => postre['etiqueta'] != filtrar).toList();
+   // List<Map<String, dynamic>> remainingPostres = postres.where((postre) => postre['etiqueta'] != filtrar).toList();
     return Column(
       children: [
         TabBar(
@@ -327,7 +335,7 @@ class TabSection extends StatelessWidget {
           child: TabBarView(
             controller: tabController,
             children: [
-              ImageSection(foodList: sortedHamburguesas + filteredHamburguesas, pageController: pageController),
+              ImageSection(foodList:  filteredHamburguesas + filteredHamburguesas2, pageController: pageController),
               ImageSection(foodList: filteredBebidas , pageController: pageController),
               ImageSection(foodList:  filteredSnacks  , pageController: pageController),
               ImageSection(foodList: filteredPostres  , pageController: pageController),
@@ -339,22 +347,23 @@ class TabSection extends StatelessWidget {
   }
 }
 List<Map<String, dynamic>> _filterAndSort(List<Map<String, dynamic>> items, List<String> selectedTags) {
-  // Función para filtrar y ordenar los elementos según las etiquetas seleccionadas por el usuario
+  // Filtrar los elementos según las etiquetas seleccionadas por el usuario
   List<Map<String, dynamic>> filteredItems = items.where((item) => item['etiqueta'].any((tag) => selectedTags.contains(tag))).toList();
 
-  // Ordenamos los elementos en función de cuántas etiquetas coinciden
+  // Ordenar los elementos según el número de etiquetas coincidentes
   filteredItems.sort((a, b) {
     int scoreA = a['etiqueta'].where((tag) => selectedTags.contains(tag)).length;
     int scoreB = b['etiqueta'].where((tag) => selectedTags.contains(tag)).length;
-    return scoreB.compareTo(scoreA);
+    return scoreB.compareTo(scoreA); // Ordenar de mayor a menor
   });
 
-  // Agregamos los elementos que no tienen nada que ver con las etiquetas seleccionadas
+  // Agregar los elementos que no tienen etiquetas coincidentes
   List<Map<String, dynamic>> unrelatedItems = items.where((item) => !item['etiqueta'].any((tag) => selectedTags.contains(tag))).toList();
   filteredItems.addAll(unrelatedItems);
 
   return filteredItems;
 }
+
 
 class ImageSection extends StatelessWidget {
   final List<Map<String, dynamic>> foodList;
