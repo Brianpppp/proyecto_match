@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   List<Map<String, dynamic>> snacks = [];
   List<Map<String, dynamic>> postres = [];
   String selectedLabel = '';
+  List<String> filtrar = [];
 
   @override
   void initState() {
@@ -38,8 +39,22 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     User? user = await _getCurrentUser();
     if (user != null) {
       selectedLabel = await _getUserSelectedLabel(user);
+      filtrar = (await _getUserFiltrar(user)).cast<String>();
     }
     setState(() {});
+  }
+  Future<List<dynamic>> _getUserFiltrar(User user) async {
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('usuarios').doc(user.email).get();
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        // Asumiendo que 'filtrar' es un array en Firestore
+        return data['etiqueta4'] ?? [];
+      }
+    } catch (e) {
+      print('Error getting user filtrar array: $e');
+    }
+    return [];
   }
 
   Future<String> _getUserSelectedLabel(User user) async {
@@ -94,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               tabController: _tabController,
               pageController: _pageController,
               selectedLabel: selectedLabel,
+              filtrar:filtrar
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -217,6 +233,9 @@ class TabSection extends StatelessWidget {
   final TabController tabController;
   final PageController pageController;
   final String selectedLabel;
+  final List<String> filtrar;
+
+
 
   const TabSection({
     Key? key,
@@ -227,13 +246,19 @@ class TabSection extends StatelessWidget {
     required this.tabController,
     required this.pageController,
     required this.selectedLabel,
+    required this.filtrar
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> sortedHamburguesas = hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] == selectedLabel).toList();
-    List<Map<String, dynamic>> remainingHamburguesas = hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] != selectedLabel).toList();
-
+    List<Map<String, dynamic>> filteredHamburguesas = _filterAndSort(hamburguesas, filtrar);
+    List<Map<String, dynamic>> filteredBebidas = _filterAndSort(bebidas, filtrar);
+    List<Map<String, dynamic>> remainingBebidas = bebidas.where((bebida) => bebida['etiqueta'] != filtrar).toList();
+    List<Map<String, dynamic>> filteredSnacks = _filterAndSort(snacks, filtrar);
+    List<Map<String, dynamic>> remainingSnacks = snacks.where((snack) => snack['etiqueta'] != filtrar).toList();
+    List<Map<String, dynamic>> filteredPostres = _filterAndSort(postres, filtrar);
+    List<Map<String, dynamic>> remainingPostres = postres.where((postre) => postre['etiqueta'] != filtrar).toList();
     return Column(
       children: [
         TabBar(
@@ -284,16 +309,33 @@ class TabSection extends StatelessWidget {
           child: TabBarView(
             controller: tabController,
             children: [
-              ImageSection(foodList: sortedHamburguesas + remainingHamburguesas, pageController: pageController),
-              ImageSection(foodList: bebidas, pageController: pageController),
-              ImageSection(foodList: snacks, pageController: pageController),
-              ImageSection(foodList: postres, pageController: pageController),
+              ImageSection(foodList: sortedHamburguesas + filteredHamburguesas, pageController: pageController),
+              ImageSection(foodList: filteredBebidas , pageController: pageController),
+              ImageSection(foodList:  filteredSnacks  , pageController: pageController),
+              ImageSection(foodList: filteredPostres  , pageController: pageController),
             ],
           ),
         ),
       ],
     );
   }
+}
+List<Map<String, dynamic>> _filterAndSort(List<Map<String, dynamic>> items, List<String> selectedTags) {
+  // Función para filtrar y ordenar los elementos según las etiquetas seleccionadas por el usuario
+  List<Map<String, dynamic>> filteredItems = items.where((item) => item['etiqueta'].any((tag) => selectedTags.contains(tag))).toList();
+
+  // Ordenamos los elementos en función de cuántas etiquetas coinciden
+  filteredItems.sort((a, b) {
+    int scoreA = a['etiqueta'].where((tag) => selectedTags.contains(tag)).length;
+    int scoreB = b['etiqueta'].where((tag) => selectedTags.contains(tag)).length;
+    return scoreB.compareTo(scoreA);
+  });
+
+  // Agregamos los elementos que no tienen nada que ver con las etiquetas seleccionadas
+  List<Map<String, dynamic>> unrelatedItems = items.where((item) => !item['etiqueta'].any((tag) => selectedTags.contains(tag))).toList();
+  filteredItems.addAll(unrelatedItems);
+
+  return filteredItems;
 }
 
 class ImageSection extends StatelessWidget {
