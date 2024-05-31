@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../components/footer.dart';
 import '../components/header.dart';
-import 'home_screen.dart'; // Importa la pantalla HomeScreen
+import 'home_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,22 +20,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class StorePage extends StatefulWidget {
   @override
   _StorePageState createState() => _StorePageState();
 }
 
 class _StorePageState extends State<StorePage> {
-  LatLng? _selectedLocation; // Variable para almacenar la ubicación seleccionada
-
-  // Definimos las ubicaciones predefinidas de los restaurantes Goiko en Barcelona
+  LatLng? _selectedLocation;
   final List<LatLng> goikoLocations = [
-    LatLng(41.3835, 2.1764),  // Goiko Diagonal
+    LatLng(41.3835, 2.1764), // Goiko Diagonal
   ];
-
-  // Posición por defecto en el centro de Barcelona
   final LatLng _defaultPosition = LatLng(41.3851, 2.1734);
+  bool reservaExitosa = false;
+  bool ubicacionSeleccionada = false;
 
   void _showReservationDialog(BuildContext context) {
     showDialog(
@@ -52,7 +51,12 @@ class _StorePageState extends State<StorePage> {
           ],
         );
       },
-    );
+    ).then((_) {
+      setState(() {
+        // Actualizar el estado para mostrar el mensaje de reserva exitosa
+        reservaExitosa = true;
+      });
+    });
   }
 
   @override
@@ -62,12 +66,12 @@ class _StorePageState extends State<StorePage> {
       body: Column(
         children: [
           Container(
-            height: 60,  // Header height
+            height: 60,
             child: Header(),
           ),
-          Expanded( // Usamos Expanded para que el contenido ocupe el espacio restante
+          Expanded(
             child: Container(
-              color: Color.fromRGBO(255, 169, 209, 1),  // Fondo rosa para el contenido
+              color: Color.fromRGBO(255, 169, 209, 1),
               padding: EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,115 +81,158 @@ class _StorePageState extends State<StorePage> {
                       'Restaurantes Match en Barcelona',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 24, // Tamaño del texto aumentado
-                        fontWeight: FontWeight.w900, // Mayor peso para resaltar más
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
                         color: Colors.black,
                       ),
                     ),
                   ),
-                  SizedBox(height: 20), // Mayor espacio debajo del texto
-                  Container(
-                    height: 550,  // Altura fija para el mapa
-                    margin: EdgeInsets.symmetric(vertical: 8.0),  // Espaciado alrededor del mapa
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.pink.withOpacity(0.4), // Sombra rosa
-                          blurRadius: 10,
-                          offset: Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: FlutterMap(
-                        options: MapOptions(
-                          center: _defaultPosition,
-                          zoom: 14.0,
-                        ),
-                        children: [
-                          TileLayer(
-                            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                            subdomains: ['a', 'b', 'c'],
+                  SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        ubicacionSeleccionada = true;
+                      });
+                    },
+                    child: Container(
+                      height: 450,
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.pink.withOpacity(0.4),
+                            blurRadius: 10,
+                            offset: Offset(0, 5),
                           ),
-                          MarkerLayer(
-                            markers: [
-                              // Marcadores para las ubicaciones predefinidas de Goiko
-                              ...goikoLocations.map((location) => Marker(
-                                width: 80.0,
-                                height: 80.0,
-                                point: location,
-                                builder: (ctx) => GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      // Alternar entre seleccionar y deseleccionar la ubicación
-                                      if (_selectedLocation == location) {
-                                        _selectedLocation = null;
-                                      } else {
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: FlutterMap(
+                          options: MapOptions(
+                            center: _defaultPosition,
+                            zoom: 14.0,
+                          ),
+                          children: [
+                            TileLayer(
+                              urlTemplate:
+                              "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                              subdomains: ['a', 'b', 'c'],
+                            ),
+                            MarkerLayer(
+                              markers: [
+                                ...goikoLocations.map((location) => Marker(
+                                  width: 80.0,
+                                  height: 80.0,
+                                  point: location,
+                                  builder: (ctx) => GestureDetector(
+                                    onTap: () {
+                                      setState(() {
                                         _selectedLocation = location;
-                                      }
-                                    });
-                                  },
-                                  child: Container(
-                                    width: 60, // Ancho del contenedor del marcador
-                                    height: 60, // Alto del contenedor del marcador
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: _selectedLocation == location ? Colors.red : Colors.pinkAccent,
-                                        width: 2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(50),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.pink.withOpacity(0.4), // Color rosa con opacidad
-                                          blurRadius: 5,
-                                          offset: Offset(0, 3),
+                                        ubicacionSeleccionada = true;
+                                      });
+                                    },
+                                    child: Container(
+                                      width: 60,
+                                      height: 60,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: _selectedLocation ==
+                                              location
+                                              ? Colors.red
+                                              : Colors.pinkAccent,
+                                          width: 2,
                                         ),
-                                      ],
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: Image.asset(
-                                        'assets/match3.png',  // Ruta al archivo PNG
-                                        width: 50,  // Ajusta el tamaño de la imagen
-                                        height: 50,
-                                        fit: BoxFit.cover,
+                                        borderRadius:
+                                        BorderRadius.circular(50),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                            Colors.pink.withOpacity(0.4),
+                                            blurRadius: 5,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(15),
+                                        child: Image.asset(
+                                          'assets/match3.png',
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              )).toList(),
-                            ],
-                          ),
-                        ],
+                                )),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(height: 20),
-                  Center(
-                    child: Container(
-                      width: 200, // Ancho fijo del contenedor del botón
-                      child: ElevatedButton(
-                        onPressed: _selectedLocation != null ? () {
-                          // Acción al presionar el botón de reserva
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomeScreen()),
-                          );
-                          _showReservationDialog(context); // Mostrar el diálogo de reserva completada
-                        } : null,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0), // Espaciado interno del botón
-                          child: Text(
-                            'Reservar',
-                            style: TextStyle(
-                              fontSize: 20, // Tamaño del texto del botón aumentado
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('usuarios')
+                        .doc(FirebaseAuth.instance.currentUser!.email)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return CircularProgressIndicator();
+                      }
+
+                      var data = snapshot.data!.data() as Map<String, dynamic>;
+                      var reserva = data['reserva'] ?? false;
+
+                      return Center(
+                        child: Container(
+                          width: 250,
+                          child: ElevatedButton(
+                            onPressed: ubicacionSeleccionada
+                                ? () {
+                              if (reserva) {
+                                // Cancelar reserva
+                                FirebaseFirestore.instance
+                                    .collection('usuarios')
+                                    .doc(FirebaseAuth.instance.currentUser!.email)
+                                    .update({'reserva': false}).then((_) {
+                                  setState(() {
+                                    reservaExitosa = false;
+                                  });
+                                });
+                              } else {
+                                // Realizar reserva
+                                FirebaseFirestore.instance
+                                    .collection('usuarios')
+                                    .doc(FirebaseAuth.instance.currentUser!.email)
+                                    .update({'reserva': true}).then((_) {
+                                  setState(() {
+                                    reservaExitosa = true;
+                                  });
+                                  _showReservationDialog(context);
+                                });
+                              }
+                            }
+                                : null,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 20.0),
+                              child: Text(
+                                reserva ? 'Cancelar Reserva' : 'Reservar',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ],
               ),

@@ -131,7 +131,7 @@ class _InfoState extends State<Info> {
                           var etiqueta2 = userData['etiqueta2'];
                           var etiqueta4 = userData['etiqueta4'] as List<dynamic>;
                           var puntos = userData['puntos'] ?? 0;
-                          var favoritos = userData['favoritos'] as List<dynamic> ?? [];
+                          var favoritos = userData['favoritos'] as List<dynamic>? ?? [];
 
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -306,15 +306,24 @@ class _InfoState extends State<Info> {
                                 ),
                               ),
                               SizedBox(height: 20),
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                spacing: 10.0,
-                                runSpacing: 10.0,
-                                children: favoritos.map((favorito) => SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2 - 15,
-                                  child: _buildFavorito(favorito),
-                                )).toList(),
-                              ),
+                              if (favoritos.isEmpty)
+                                Text(
+                                  'No hay elementos en la lista de likes.',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                )
+                              else
+                                Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: 10.0,
+                                  runSpacing: 10.0,
+                                  children: favoritos.map((favorito) => SizedBox(
+                                    width: MediaQuery.of(context).size.width / 2 - 15,
+                                    child: _buildFavorito(favorito),
+                                  )).toList(),
+                                ),
                               SizedBox(height: 20),
                             ],
                           );
@@ -440,73 +449,4 @@ class _InfoState extends State<Info> {
       ],
     );
   }
-
 }
-
-
-Future<void> _eliminarFavorito(dynamic favorito) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user = auth.currentUser;
-
-    if (user != null) {
-      String userEmail = user.email!;
-      // Eliminar el favorito de la lista de favoritos en la base de datos
-      await FirebaseFirestore.instance.collection('usuarios').doc(userEmail).update({
-        'favoritos': FieldValue.arrayRemove([favorito])
-      });
-    }
-  }
-
-
-  Future<User?> _getCurrentUser() async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    return auth.currentUser;
-  }
-
-  void _showEditProfileModal(BuildContext context) async {
-    TextEditingController _usernameController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Editar perfil'),
-          content: TextField(
-            controller: _usernameController,
-            decoration: InputDecoration(labelText: 'Nuevo nombre de usuario'),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () async {
-                String newUsername = _usernameController.text.trim();
-                if (newUsername.isNotEmpty) {
-                  FirebaseAuth auth = FirebaseAuth.instance;
-                  User? user = auth.currentUser;
-                  if (user != null) {
-                    await FirebaseFirestore.instance.collection('usuarios').doc(user.email).update({'nombre': newUsername});
-                    Navigator.pop(context); // Cerrar el modal
-                    _refreshPage(context); // Recargar la página
-                  }
-                }
-              },
-              child: Text('Guardar'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Cerrar el modal
-              },
-              child: Text('Cancelar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _refreshPage(BuildContext context) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (BuildContext context) => Info()),
-    );
-  }
-
