@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   String selectedLabel = '';
   List<String> filtrar = [];
 
+
   @override
   void initState() {
     super.initState();
@@ -141,7 +142,15 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               List<Map<String, dynamic>> currentList;
               switch (_tabController.index) {
                 case 0:
-                  currentList = _filterAndSort(hamburguesas, filtrar);
+                  List<Map<String, dynamic>> filteredWithLabel = _filterAndSort(
+                    hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] == selectedLabel).toList(),
+                    filtrar,
+                  );
+                  List<Map<String, dynamic>> filteredWithoutLabel = _filterAndSort(
+                    hamburguesas.where((hamburguesa) => hamburguesa['etiquetaSeleccionada'] != selectedLabel).toList(),
+                    filtrar,
+                  );
+                  currentList = filteredWithLabel + filteredWithoutLabel;
                   break;
                 case 1:
                   currentList = _filterAndSort(bebidas, filtrar);
@@ -152,6 +161,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 case 3:
                   currentList = _filterAndSort(postres, filtrar);
                   break;
+
                 default:
                   currentList = [];
               }
