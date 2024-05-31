@@ -137,8 +137,30 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             },
             onFavorite: () {
               int currentPageIndex = _pageController.page?.round() ?? 0;
-              Map<String, dynamic> currentItem = hamburguesas[currentPageIndex]; // Cambia 'hamburguesas' si es necesario
-              _addToFavorites(currentItem);
+              // Get the list of items based on the current tab index
+              List<Map<String, dynamic>> currentList;
+              switch (_tabController.index) {
+                case 0:
+                  currentList = _filterAndSort(hamburguesas, filtrar);
+                  break;
+                case 1:
+                  currentList = _filterAndSort(bebidas, filtrar);
+                  break;
+                case 2:
+                  currentList = _filterAndSort(snacks, filtrar);
+                  break;
+                case 3:
+                  currentList = _filterAndSort(postres, filtrar);
+                  break;
+                default:
+                  currentList = [];
+              }
+              if (currentPageIndex < currentList.length) {
+                Map<String, dynamic> currentItem = currentList[currentPageIndex];
+                _addToFavorites(currentItem);
+                int itemCount = currentList.length;
+                _nextPage(itemCount, currentPageIndex);
+              }
             },
           ),
 
