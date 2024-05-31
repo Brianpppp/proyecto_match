@@ -303,7 +303,7 @@ class TabSection extends StatelessWidget {
             ),
             Tab(
               child: Text(
-                'Drinks',
+                'Drink',
                 style: TextStyle(
                   fontSize: 17.0, // Modifica el tamaño de la letra aquí
                   fontWeight: FontWeight.bold, // Aquí aplicas la propiedad fontWeight
@@ -312,7 +312,7 @@ class TabSection extends StatelessWidget {
             ),
             Tab(
               child: Text(
-                'Snacks',
+                'Snack',
                 style: TextStyle(
                   fontSize: 17.0, // Modifica el tamaño de la letra aquí
                   fontWeight: FontWeight.bold, // Aquí aplicas la propiedad fontWeight
@@ -321,7 +321,7 @@ class TabSection extends StatelessWidget {
             ),
             Tab(
               child: Text(
-                'Desserts',
+                'Dessert',
                 style: TextStyle(
                   fontSize: 17.0, // Modifica el tamaño de la letra aquí
                   fontWeight: FontWeight.bold, // Aquí aplicas la propiedad fontWeight

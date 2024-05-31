@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import '../components/footer.dart';
 import '../components/header.dart';
+import 'home_screen.dart'; // Importa la pantalla HomeScreen
 
 void main() {
   runApp(MyApp());
@@ -17,21 +18,42 @@ class MyApp extends StatelessWidget {
   }
 }
 
+
 class StorePage extends StatefulWidget {
   @override
   _StorePageState createState() => _StorePageState();
 }
 
 class _StorePageState extends State<StorePage> {
+  LatLng? _selectedLocation; // Variable para almacenar la ubicación seleccionada
+
   // Definimos las ubicaciones predefinidas de los restaurantes Goiko en Barcelona
   final List<LatLng> goikoLocations = [
-    LatLng(41.3911, 2.1608),  // Goiko Passeig de Gràcia
     LatLng(41.3835, 2.1764),  // Goiko Diagonal
-    LatLng(41.3931, 2.1651),  // Goiko Rambla Catalunya
   ];
 
   // Posición por defecto en el centro de Barcelona
   final LatLng _defaultPosition = LatLng(41.3851, 2.1734);
+
+  void _showReservationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Reserva completada"),
+          content: Text("¡Tu reserva ha sido realizada con éxito!"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo
+              },
+              child: Text("Aceptar"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +77,7 @@ class _StorePageState extends State<StorePage> {
                       'Restaurantes Match en Barcelona',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 32, // Tamaño del texto aumentado
+                        fontSize: 24, // Tamaño del texto aumentado
                         fontWeight: FontWeight.w900, // Mayor peso para resaltar más
                         color: Colors.black,
                       ),
@@ -63,8 +85,8 @@ class _StorePageState extends State<StorePage> {
                   ),
                   SizedBox(height: 20), // Mayor espacio debajo del texto
                   Container(
-                    height: 400,  // Altura fija para el mapa
-                    margin: EdgeInsets.symmetric(vertical: 16.0),  // Espaciado alrededor del mapa
+                    height: 550,  // Altura fija para el mapa
+                    margin: EdgeInsets.symmetric(vertical: 8.0),  // Espaciado alrededor del mapa
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: [
@@ -96,36 +118,21 @@ class _StorePageState extends State<StorePage> {
                                 point: location,
                                 builder: (ctx) => GestureDetector(
                                   onTap: () {
-                                    showDialog(
-                                      context: ctx,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text('Restaurante Match'),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text('Ubicación: (${location.latitude}, ${location.longitude})'),
-                                              SizedBox(height: 10),
-                                              Text('Detalles del Restaurante:'),
-                                              Text('Este es uno de los restaurantes más populares de Barcelona, conocido por su excelente servicio y deliciosa comida.'),
-                                            ],
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text('Cerrar'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
+                                    setState(() {
+                                      // Alternar entre seleccionar y deseleccionar la ubicación
+                                      if (_selectedLocation == location) {
+                                        _selectedLocation = null;
+                                      } else {
+                                        _selectedLocation = location;
+                                      }
+                                    });
                                   },
                                   child: Container(
+                                    width: 60, // Ancho del contenedor del marcador
+                                    height: 60, // Alto del contenedor del marcador
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: Colors.pinkAccent,
+                                        color: _selectedLocation == location ? Colors.red : Colors.pinkAccent,
                                         width: 2,
                                       ),
                                       borderRadius: BorderRadius.circular(50),
@@ -152,6 +159,31 @@ class _StorePageState extends State<StorePage> {
                             ],
                           ),
                         ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Center(
+                    child: Container(
+                      width: 200, // Ancho fijo del contenedor del botón
+                      child: ElevatedButton(
+                        onPressed: _selectedLocation != null ? () {
+                          // Acción al presionar el botón de reserva
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomeScreen()),
+                          );
+                          _showReservationDialog(context); // Mostrar el diálogo de reserva completada
+                        } : null,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0), // Espaciado interno del botón
+                          child: Text(
+                            'Reservar',
+                            style: TextStyle(
+                              fontSize: 20, // Tamaño del texto del botón aumentado
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
