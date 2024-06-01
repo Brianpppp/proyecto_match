@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:todolist_firebase/screens/ShoppingCart.dart';
 import 'package:todolist_firebase/screens/login_registro_screen.dart';
 import '../components/header.dart';
 import '../components/footer.dart';
@@ -157,6 +158,20 @@ class UserPage extends StatelessWidget {
                       },
                     ),
                     Divider(),
+                    ListTile(
+                      leading: Icon(Icons.shopping_cart),
+                      title: Text(
+                        'Carrito de compra',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => ShoppingCartPage()), // Coma eliminada aquí
+                        );
+                      },
+                    ),
+
                   ],
                 ),
               ),
