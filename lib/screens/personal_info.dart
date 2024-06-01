@@ -347,7 +347,7 @@ class _InfoState extends State<Info> {
       margin: EdgeInsets.symmetric(vertical: 5),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: Color.fromRGBO(255, 222, 248, 1),
+        color: Color.fromRGBO(255, 212, 232, 1.0),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -383,7 +383,7 @@ class _InfoState extends State<Info> {
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Color.fromRGBO(255, 222, 248, 1),
+            color: Color.fromRGBO(255, 212, 232, 1.0),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(

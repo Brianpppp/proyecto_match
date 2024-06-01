@@ -136,7 +136,7 @@ class MenuPage extends StatelessWidget {
                   width: 90.0,
                   height: 80.0,
                   decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 169, 209, 1), // Fondo rosa
+                    color: Color.fromRGBO(255, 212, 232, 1.0), // Fondo rosa
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(

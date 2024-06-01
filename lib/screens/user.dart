@@ -58,10 +58,12 @@ class UserPage extends StatelessWidget {
         children: [
           Header(),
           Expanded(
+
             child: Container(
               color: Color.fromRGBO(255, 169, 209, 1.0),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
+
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
