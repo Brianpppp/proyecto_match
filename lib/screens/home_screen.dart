@@ -443,7 +443,7 @@ Widget _buildUsernameWidget(BuildContext context, User user) {
           var userData = snapshot.data!.data() as Map<String, dynamic>;
           var username = userData['nombre'];
           var puntos = userData['puntos'] ?? 0;
-          var maxPuntos = 225; // Aquí puedes establecer el máximo de puntos posible
+          var maxPuntos = 1000; // Aquí puedes establecer el máximo de puntos posible
           var progress = puntos / maxPuntos;
 
           return Container(

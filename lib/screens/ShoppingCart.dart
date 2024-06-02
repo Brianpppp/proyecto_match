@@ -130,15 +130,28 @@ class ShoppingCartPage extends StatelessWidget {
                       },
                     );
                   } else {
-                    // Si el carrito no está vacío, realizar la compra
-                    // Elimina todos los productos del carrito al realizar la compra
+                    // Calcular el total de la compra
+                    double totalCompra = 0.0;
+                    carrito.forEach((key, value) {
+                      totalCompra += value['precio_total'];
+                    });
+
+                    // Calcular los puntos ganados
+                    int puntosGanados = (totalCompra * 10).toInt();
+
+                    // Actualizar los puntos del usuario
+                    FirebaseFirestore.instance.collection('usuarios').doc(user.email).update({
+                      'puntos': FieldValue.increment(puntosGanados),
+                    });
+
+                    // Eliminar todos los productos del carrito al realizar la compra
                     FirebaseFirestore.instance.collection('usuarios').doc(user.email).update({
                       'carrito': FieldValue.delete(),
                     });
 
                     // Muestra el mensaje de compra realizada con éxito
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Compra realizada con éxito.')),
+                      SnackBar(content: Text('Compra realizada con éxito. Ganaste $puntosGanados puntos.')),
                     );
 
                     // Navega a la HomePage
@@ -155,6 +168,7 @@ class ShoppingCartPage extends StatelessWidget {
               child: Text('Finalizar Compra', style: TextStyle(fontSize: 18)),
             ),
           ),
+
           SizedBox(height: 20),
 
           Footer(), // Utiliza tu propio widget Footer

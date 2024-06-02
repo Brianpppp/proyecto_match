@@ -234,7 +234,7 @@ class _InfoState extends State<Info> {
                                                     width: 50,
                                                     height: 50,
                                                     child: CircularProgressIndicator(
-                                                      value: puntos / 225,
+                                                      value: puntos / 1000,
                                                       strokeWidth: 8,
                                                       backgroundColor: Colors.grey.withOpacity(0.3),
                                                       valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
