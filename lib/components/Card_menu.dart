@@ -15,18 +15,14 @@ class CardMenu extends StatefulWidget {
 
 class _CardMenuState extends State<CardMenu> {
   late List<int> counters;
-  late List<double> prices;
-  late List<String> names;
+  final Map<String, dynamic> productDetails = {};
   final Map<String, dynamic> purchaseDetails = {};
-
   final Map<String, int> cart = {};
 
   @override
   void initState() {
     super.initState();
     counters = List<int>.filled(0, 0, growable: true);
-    prices = List<double>.empty(growable: true);
-    names = List<String>.empty(growable: true);
     _fetchData();
   }
 
@@ -34,41 +30,39 @@ class _CardMenuState extends State<CardMenu> {
     final snapshot = await FirebaseFirestore.instance.collection(widget.collection).get();
     setState(() {
       counters = List<int>.filled(snapshot.docs.length, 0, growable: true);
-      prices = snapshot.docs.map<double>((doc) => (doc['precio'] ?? 0.0).toDouble()).toList();
-      names = snapshot.docs.map<String>((doc) => (doc['apodo'] ?? '')).toList();
-    });
-  }
-
-  Future<void> _addToCart(String docId, int counter) async {
-    setState(() {
-      if (counter > 0) {
-        // Verificar si el elemento ya está en el carrito
-        if (cart.containsKey(docId)) {
-          // Si el elemento ya está en el carrito, actualizar la cantidad existente
-          cart[docId] = cart[docId]! + counter; // Sumar la cantidad nueva a la cantidad existente
-        } else {
-          // Si el elemento no está en el carrito, agregarlo como un nuevo elemento
-          cart[docId] = counter;
-        }
-        // Calcular el precio total de este producto y guardarlo en el mapa de detalles de compra
-        final index = cart.keys.toList().indexOf(docId);
-        final totalPrice = prices[index] * counter;
-        purchaseDetails[docId] = {
-          'nombre': names[index],
-          'cantidad': counter,
-          'precio': prices[index],
-          'precio_total': totalPrice, // Agregar el precio total del producto
+      for (var doc in snapshot.docs) {
+        productDetails[doc.id] = {
+          'nombre': doc['apodo'],
+          'precio': (doc['precio'] ?? 0.0).toDouble(),
+          'url': doc['url'],
+          'descripcion': doc['descripcion'],
         };
-      } else {
-        // Si la cantidad es 0, eliminar el elemento del carrito y de los detalles de compra
-        cart.remove(docId);
-        purchaseDetails.remove(docId);
       }
     });
   }
 
+  void _addToCart(String docId, int counter, int index) {
+    setState(() {
+      if (counter > 0) {
+        cart[docId] = counter;
 
+        final product = productDetails[docId];
+        final totalPrice = product['precio'] * counter;
 
+        purchaseDetails[docId] = {
+          'nombre': product['nombre'],
+          'cantidad': counter,
+          'precio': product['precio'],
+          'precio_total': totalPrice,
+        };
+      } else {
+        cart.remove(docId);
+        purchaseDetails.remove(docId);
+      }
+
+      counters[index] = counter;
+    });
+  }
 
   Future<void> _checkout() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -84,57 +78,26 @@ class _CardMenuState extends State<CardMenu> {
       final userDoc = FirebaseFirestore.instance.collection('usuarios').doc(userEmail);
 
       try {
-        // Calcular el precio total de la compra sumando los precios totales de todos los productos en el carrito
-        double totalPurchasePrice = 0.0;
-        cart.forEach((docId, quantity) {
-          final index = cart.keys.toList().indexOf(docId);
-          final totalPrice = prices[index] * quantity;
-          totalPurchasePrice += totalPrice;
-        });
-
-        // Mapa para almacenar los detalles de compra actualizados con el precio total
-        final Map<String, dynamic> purchaseDetailsWithTotalPrice = {};
-        cart.forEach((docId, quantity) {
-          final productDetails = purchaseDetails[docId];
-          final totalPrice = productDetails['precio_total'];
-          purchaseDetailsWithTotalPrice[docId] = {
-            ...productDetails,
-            'precio_total': totalPrice,
-          };
-        });
-
-        // Registrar la compra en la colección 'compras'
-        await FirebaseFirestore.instance.collection('compras').doc().set({
-          'userEmail': userEmail,
-          'productos': purchaseDetailsWithTotalPrice,
-          'totalPrecio': totalPurchasePrice, // Agregar el precio total de la compra
-          'timestamp': FieldValue.serverTimestamp(),
-        });
-
-        print('Compra registrada correctamente para $userEmail con los siguientes detalles:');
-        purchaseDetailsWithTotalPrice.forEach((docId, productDetails) {
-          print('ID del producto: $docId, Detalles: $productDetails');
-        });
-
-        // Ahora actualizamos el documento del usuario con la información del carrito al hacer checkout
         await userDoc.set({
           'carrito': purchaseDetails,
         }, SetOptions(merge: true));
 
-        // Eliminamos el carrito local después de agregarlo a la base de datos
-        cart.clear();
+        setState(() {
+          cart.clear();
+          purchaseDetails.clear();
+          counters = List<int>.filled(counters.length, 0);
+        });
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Compra realizada con éxito.')),
+          SnackBar(content: Text('Carrito actualizado con éxito.')),
         );
       } catch (e) {
-        print('Error al registrar la compra: $e');
+        print('Error al actualizar el carrito: $e');
       }
     } else {
       print('El usuario no tiene un correo electrónico.');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -155,8 +118,10 @@ class _CardMenuState extends State<CardMenu> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
                       final doc = snapshot.data!.docs[index];
+                      final String docId = doc.id;
                       final int counter = counters[index];
-                      final double price = prices.isEmpty ? 0.0 : prices[index];
+                      final product = productDetails[docId];
+                      final double price = product['precio'];
                       final double totalPrice = counter * price;
 
                       return Padding(
@@ -180,7 +145,7 @@ class _CardMenuState extends State<CardMenu> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(50.0),
                                     child: Image.network(
-                                      doc['url'],
+                                      product['url'],
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -193,7 +158,7 @@ class _CardMenuState extends State<CardMenu> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          doc['apodo'],
+                                          product['nombre'],
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18.0,
@@ -201,7 +166,7 @@ class _CardMenuState extends State<CardMenu> {
                                         ),
                                         SizedBox(height: 8.0),
                                         Text(
-                                          doc['descripcion'],
+                                          product['descripcion'],
                                           textAlign: TextAlign.justify,
                                           style: TextStyle(
                                             fontSize: 12.0,
@@ -244,7 +209,7 @@ class _CardMenuState extends State<CardMenu> {
                                           onPressed: () {
                                             setState(() {
                                               counters[index]++;
-                                              _addToCart(doc.id, counters[index]);
+                                              _addToCart(docId, counters[index], index);
                                             });
                                           },
                                         ),
@@ -260,12 +225,12 @@ class _CardMenuState extends State<CardMenu> {
                                           iconSize: 20.0,
                                           icon: Icon(Icons.remove, color: Colors.red),
                                           onPressed: () {
-                                            if (counters[index] > 0) {
-                                              setState(() {
+                                            setState(() {
+                                              if (counters[index] > 0) {
                                                 counters[index]--;
-                                                _addToCart(doc.id, counters[index]);
-                                              });
-                                            }
+                                                _addToCart(docId, counters[index], index);
+                                              }
+                                            });
                                           },
                                         ),
                                       ],

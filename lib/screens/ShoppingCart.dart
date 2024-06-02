@@ -10,7 +10,6 @@ class ShoppingCartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      // Si el usuario no está autenticado, muestra un mensaje de error
       return Scaffold(
         body: Center(
           child: Text('Error: Usuario no autenticado.'),
@@ -21,7 +20,7 @@ class ShoppingCartPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Header(), // Utiliza tu propio widget Header
+          Header(),
           Expanded(
             child: StreamBuilder(
               stream: FirebaseFirestore.instance.collection('usuarios').doc(user.email).snapshots(),
@@ -34,7 +33,6 @@ class ShoppingCartPage extends StatelessWidget {
 
                 final Map<String, dynamic> userData = snapshot.data!.data() as Map<String, dynamic>;
                 if (!userData.containsKey('carrito')) {
-                  // Si el campo 'carrito' no existe en el documento del usuario, muestra un mensaje de error
                   return Center(
                     child: Text('Añade algún elemento al carrito para que aparezca el contenido.'),
                   );
@@ -52,7 +50,6 @@ class ShoppingCartPage extends StatelessWidget {
                   itemCount: carrito.length + 1,
                   itemBuilder: (context, index) {
                     if (index == carrito.length) {
-                      // Mostrar el precio total en el último elemento de la lista
                       return ListTile(
                         title: Text(
                           'Total de la compra:',
@@ -71,7 +68,6 @@ class ShoppingCartPage extends StatelessWidget {
                     final double precioTotalProducto = producto['precio_total'] ?? (precioUnitario * cantidad);
                     totalCompra += precioTotalProducto;
 
-                    // Actualizar el precio total del producto en el carrito
                     carrito[docId]['precio_total'] = precioTotalProducto;
 
                     return ListTile(
@@ -87,7 +83,6 @@ class ShoppingCartPage extends StatelessWidget {
                       trailing: IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {
-                          // Elimina el producto del carrito
                           FirebaseFirestore.instance.collection('usuarios').doc(user.email).update({
                             'carrito.$docId': FieldValue.delete(),
                           });
@@ -104,16 +99,13 @@ class ShoppingCartPage extends StatelessWidget {
             onPressed: () {
               final user = FirebaseAuth.instance.currentUser;
               if (user == null) {
-                // Si el usuario no está autenticado, muestra un mensaje de error
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Error: Usuario no autenticado.')),
                 );
               } else {
-                // Verificar si el carrito está vacío
                 FirebaseFirestore.instance.collection('usuarios').doc(user.email).get().then((docSnapshot) {
                   final carrito = docSnapshot.data()?['carrito'];
                   if (carrito == null || (carrito as Map).isEmpty) {
-                    // Si el carrito está vacío, mostrar un mensaje
                     showModalBottomSheet(
                       context: context,
                       builder: (BuildContext context) {
@@ -130,31 +122,34 @@ class ShoppingCartPage extends StatelessWidget {
                       },
                     );
                   } else {
-                    // Calcular el total de la compra
                     double totalCompra = 0.0;
                     carrito.forEach((key, value) {
                       totalCompra += value['precio_total'];
                     });
 
-                    // Calcular los puntos ganados
                     int puntosGanados = (totalCompra * 10).toInt();
 
-                    // Actualizar los puntos del usuario
                     FirebaseFirestore.instance.collection('usuarios').doc(user.email).update({
                       'puntos': FieldValue.increment(puntosGanados),
                     });
 
-                    // Eliminar todos los productos del carrito al realizar la compra
+                    // Guardar la compra en la colección "compras"
+                    FirebaseFirestore.instance.collection('compras').add({
+                      'emailUsuario': user.email,
+                      'fecha': Timestamp.now(),
+                      'productos': carrito,
+                      'total': totalCompra,
+                      'puntosGanados': puntosGanados,
+                    });
+
                     FirebaseFirestore.instance.collection('usuarios').doc(user.email).update({
                       'carrito': FieldValue.delete(),
                     });
 
-                    // Muestra el mensaje de compra realizada con éxito
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Compra realizada con éxito. Ganaste $puntosGanados puntos.')),
                     );
 
-                    // Navega a la HomePage
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -168,10 +163,8 @@ class ShoppingCartPage extends StatelessWidget {
               child: Text('Finalizar Compra', style: TextStyle(fontSize: 18)),
             ),
           ),
-
           SizedBox(height: 20),
-
-          Footer(), // Utiliza tu propio widget Footer
+          Footer(),
         ],
       ),
     );
